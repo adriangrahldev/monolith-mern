@@ -43,7 +43,7 @@ const LoginPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={(e)=> handleSubmit(e)}>
             <div className="grid w-full items-center gap-2">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="email">Email</Label>
