@@ -9,12 +9,13 @@ import {
 } from "../ui/dropdown-menu";
 import { BreadcrumbItem as BCItem } from "@/contexts/BreadcrumbItem.interface";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
+import UserBadge from "../user/UserBadge";
 
 const TopBar = () => {
   const { breadcrumb, addItem, removeItem } = useBreadcrumb();
 
   return (
-    <div className="topbar bg-[#F7F6F6] w-full">
+    <div className="w-full">
       <div className="h-20 flex justify-between items-center px-6 text-lg">
         <div className="topLeft flex gap-2">
           {breadcrumb.map((item: BCItem, index: number) => (
@@ -45,7 +46,14 @@ const TopBar = () => {
             </div>
           ))}
         </div>
-        <div className="topRight"></div>
+        <div className="topRight">
+          <UserBadge user={
+            {
+              name: "John Doe",
+              email: "contact@adriangrahl.dev"
+            }
+          } />
+        </div>
       </div>
     </div>
   );
