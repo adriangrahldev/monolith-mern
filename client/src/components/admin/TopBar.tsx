@@ -10,9 +10,20 @@ import {
 import { BreadcrumbItem as BCItem } from "@/contexts/BreadcrumbItem.interface";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import UserBadge from "../user/UserBadge";
+import { useEffect, useState } from "react";
 
 const TopBar = () => {
   const { breadcrumb, addItem, removeItem } = useBreadcrumb();
+  const [user, setUser] = useState<undefined | any>(undefined);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setUser({
+        name: "John Doe",
+        email: "contact@adriangrahl.dev"
+      });
+    }, 2000);
+  }, []);
 
   return (
     <div className="w-full">
@@ -47,12 +58,7 @@ const TopBar = () => {
           ))}
         </div>
         <div className="topRight">
-          <UserBadge user={
-            {
-              name: "John Doe",
-              email: "contact@adriangrahl.dev"
-            }
-          } />
+          <UserBadge user={user} />
         </div>
       </div>
     </div>
