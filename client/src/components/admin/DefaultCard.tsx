@@ -7,6 +7,7 @@ const DefaultCard = ({
   subtitle,
   description,
   counter,
+  counterText,
   link,
   theme = "light",
 }: {
@@ -14,6 +15,7 @@ const DefaultCard = ({
   subtitle?: string;
   description?: string;
   counter: number;
+  counterText?: string;
   link: string;
   theme?: "dark" | "light";
 }) => {
@@ -23,7 +25,7 @@ const DefaultCard = ({
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-xl font-bold">{title}</h2>
-            {subtitle && <h3 className="text-sm font-semibold text-slate-500">{subtitle}</h3> }
+            {subtitle && <h3 className={`text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>{subtitle}</h3> }
           </div>
 
           <Link href={link} className="self-start">
@@ -34,7 +36,10 @@ const DefaultCard = ({
       <CardContent>
         <div className="flex gap-2 justify-between">
           <p className="text-sm">{description}</p>
-          <span className="text-4xl font-bold self-end">{counter}</span>
+          <span className="self-end flex flex-col -space-y-1 justify-center">
+            <span className="text-4xl font-bold">{counter}</span>
+            <span className="text-sm ">{counterText}</span>
+          </span>
         </div>
       </CardContent>
     </Card>
