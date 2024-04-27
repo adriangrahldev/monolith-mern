@@ -4,11 +4,13 @@ import { ChevronRightIcon } from "@radix-ui/react-icons";
 
 const DefaultCard = ({
   title,
+  description,
   counter,
   link,
   theme = "light",
 }: {
   title: string;
+  description?: string;
   counter: number;
   link: string;
   theme?: "dark" | "light";
@@ -23,8 +25,11 @@ const DefaultCard = ({
           </Link>
         </div>
       </CardHeader>
-      <CardContent className="text-end">
-        <p className="text-4xl font-bold">{counter}</p>
+      <CardContent>
+        <div className="flex justify-between">
+          <p>{description}</p>
+          <span className="text-4xl font-bold">{counter}</span>
+        </div>
       </CardContent>
     </Card>
   );
