@@ -6,13 +6,15 @@ const DefaultCard = ({
   title,
   counter,
   link,
+  theme = "light",
 }: {
   title: string;
   counter: number;
   link: string;
+  theme?: "dark" | "light";
 }) => {
   return (
-    <Card>
+    <Card className={`${theme === 'dark' ? 'bg-black text-white' : 'bg-white text-black'}`}>
       <CardHeader>
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-bold">{title}</h2>
