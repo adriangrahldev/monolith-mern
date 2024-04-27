@@ -8,7 +8,7 @@ const UserBadge = ({user}:{user:any}) => {
                 </div>
             </div>
             <div className="flex flex-col -space-y-1">
-                <span className="font-semibold">{user.name}</span>
+                <span className="font-bold">{user.name}</span>
                 <span className="text-sm">{user.email}</span>
             </div>
         </div>
