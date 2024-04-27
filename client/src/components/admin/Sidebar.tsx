@@ -25,7 +25,7 @@ const Sidebar = ({routes}: {routes:any[]}) => {
     }, []);
 
     return (
-        <div className="sidebar w-20 flex flex-col items-center bg-slate-200 h-screen">
+        <div className="fixed w-20 flex flex-col items-center bg-slate-200 h-screen">
             <div className="sidebar-brand border-b-2 py-4 border-gray-300 w-full">
                 <Image src={'/isologo1.png'} width={50} height={50} alt='Isologo' className='mx-auto' />
             </div>
