@@ -17,7 +17,7 @@ export const SideBar = () => {
   return (
     <aside className="w-20 bg-white-800 h-screen">
       <div className="flex items-center justify-center h-16 bg-white-900">
-        <Image src="/isologo1.png" alt="Monolith Logo" width={32} height={32} />
+        <Image src="/isologo1.svg" alt="Monolith Logo" width={32} height={32} />
       </div>
       <div className="border-t border-gray-500 my" />
       <nav>
