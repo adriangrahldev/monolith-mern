@@ -1,18 +1,7 @@
 "use client";
-import { FormEvent, useContext, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { FormEvent, useState } from "react";
+import LoginForm from "@/components/user/LoginForm";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const LoginPage = () => {
   // const { user, setUser } = useContext(UserContext);
@@ -33,56 +22,23 @@ const LoginPage = () => {
     // setUser(data);
   };
 
-  return (
-    <div className="w-screen h-screen flex items-center justify-center">
-      <Card>
-        <CardHeader>
-          <CardTitle>Sign In</CardTitle>
-          <CardDescription>
-            <span>¡Sign to access to your dashboard!</span>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={(e)=> handleSubmit(e)}>
-            <div className="grid w-full items-center gap-2">
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  type="email"
-                  id="email"
-                  placeholder="Type your email address"
-                />
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="password">Passoword</Label>
-                <Input
-                  type="password"
-                  id="password"
-                  placeholder="Type your password"
-                />
-              </div>
-              <div className="flex flex-col px-[2px] ">
-                <Button variant={'link'} className="flex-1" size={'sm'}>Forgot password?</Button>
-              </div>
-              <div className="flex flex-col px-[2px]">
-                <Button className="flex-1">Login</Button>
-              </div>
-              <div className="flex flex-col px-[2px] text-center">
-                or
-              </div>
-              <div className="flex flex-col px-[2px] text-center">
-                <Button variant={'outline'} className="flex-1 flex gap-2">
-                    <FontAwesomeIcon icon={faGoogle} className="h-6 w-6"></FontAwesomeIcon>
-                    Sign in with Google
-                </Button>
-              </div>
-            </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex"></CardFooter>
-      </Card>
+return (
+    <div className="w-screen h-screen flex items-center">
+        <div className="w-[60%] px-44 text-center">
+            <h1 className="text-4xl font-bold text-center mb-4">Welcome to Monolith</h1>
+            <p className="mb-4">
+                Monolith is a project management tool for freelancers. It helps you to manage your projects, clients, and invoices in one place.
+            </p>
+            <p>
+            Monolith is designed to simplify your project management experience. With Monolith, you can effortlessly organize your projects, clients, and invoices all in one place. Say goodbye to the hassle of juggling multiple tools and platforms. Monolith streamlines your workflow, allowing you to focus on what you do best - delivering exceptional results to your clients. Whether you're a freelancer or a small business owner, Monolith is the ultimate solution for efficient project management. Try Monolith today and experience the power of simplicity.
+            </p>
+
+        </div>
+        <div className="w-[40%] px-24">
+            <LoginForm handleSubmit={handleSubmit} />
+        </div>
     </div>
-  );
+);
 };
 
 export default LoginPage;
