@@ -8,13 +8,20 @@ import { useEffect } from 'react';
 
 
 
-const Sidebar = ({routes}: {routes:any}) => {
+const Sidebar = ({routes}: {routes:any[]}) => {
     const pathname = usePathname();
 
     const { breadcrumb, addItem, removeItem } = useBreadcrumb();
 
     useEffect(() => {
-        addItem({title: 'Home', type: 'link', link: '/dashboard'});
+        addItem(
+            {
+                title: 'Dashboard',
+                link: '/admin/dashboard',
+                icon: 'home'
+            }
+        );
+
     }, []);
 
     return (
