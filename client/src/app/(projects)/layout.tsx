@@ -1,5 +1,5 @@
-import Sidebar from "@/components/admin/Sidebar";
-import TopBar from "@/components/admin/TopBar";
+import {SideBar} from "@/components/ui/SideBar";
+import TopBar from "@/components/ui/TopBar";
 import { ReactNode } from "react";
 import { routes } from "@/routes";
 import { BreadcrumbProvider, useBreadcrumb } from "@/contexts/BreadcrumbContext";
@@ -10,10 +10,10 @@ const AdminLayout = ({children} : {children: ReactNode}) =>{
     return(
         <BreadcrumbProvider>
             <div className="flex">
-                <Sidebar routes={routes} />
+                <SideBar routes={routes} />
                 <main className="w-full">
                     <TopBar/>
-                    <div className="p-6 mx-20 my-20">   
+                    <div className="p-6  mt-20">   
                         {children}
                     </div>
                 </main>

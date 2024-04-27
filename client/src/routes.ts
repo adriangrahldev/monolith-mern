@@ -1,19 +1,19 @@
-import { faBriefcase, faHouse, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faProjectDiagram, faBorderAll, faUsers } from "@fortawesome/free-solid-svg-icons";
 
 export const routes = [
     {
         title: "Home",
-        icon: faHouse,
-        link: "/dashboard"
+        icon: faBorderAll,
+        path: "/dashboard"
     },
     {
         title: "Projects",
-        icon: faBriefcase,
-        link: "/admin/projects"
+        icon: faProjectDiagram,
+        path: "/projects"
     },
     {
         title: "Clients",
         icon: faUsers,
-        link: "/admin/clients"
+        path: "/clients"
     },
 ];

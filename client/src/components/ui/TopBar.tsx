@@ -1,12 +1,12 @@
 "use client";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import { BreadcrumbItem, BreadcrumbSeparator } from "../ui/breadcrumb";
+import { BreadcrumbItem, BreadcrumbSeparator } from "./breadcrumb";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "./dropdown-menu";
 import { BreadcrumbItem as BCItem } from "@/contexts/BreadcrumbItem.interface";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import UserBadge from "../user/UserBadge";
@@ -57,7 +57,7 @@ const TopBar = () => {
             </div>
           ))}
         </div>
-        
+
           <UserBadge user={user} />
         
       </div>
