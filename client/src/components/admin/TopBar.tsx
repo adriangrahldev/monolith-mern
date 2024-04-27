@@ -57,9 +57,9 @@ const TopBar = () => {
             </div>
           ))}
         </div>
-        <div className="topRight">
+        
           <UserBadge user={user} />
-        </div>
+        
       </div>
     </div>
   );
