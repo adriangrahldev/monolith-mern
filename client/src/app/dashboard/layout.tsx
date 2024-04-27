@@ -11,7 +11,7 @@ const AdminLayout = ({children} : {children: ReactNode}) =>{
         <BreadcrumbProvider>
             <div className="flex">
                 <Sidebar routes={routes} />
-                <main className="w-full">
+                <main className="w-full mx-20">
                     <TopBar/>
                     <div className="p-6">   
                         {children}
