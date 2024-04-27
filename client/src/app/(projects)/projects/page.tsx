@@ -8,52 +8,52 @@ const page = () => {
 
   const projects = [
     {
+      _id: "a67b1a3b3b7e6d1e0b4e",
       title: 'Landing Page',
       subtitle: 'Adrian Grahl',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       counter: Math.round(Math.random() * 100),
       counterText: 'Tasks',
-      link: '/admin/projects'
     },
     {
+      _id: "a67b1a3b3b7e6d1e0b4e",
+      title: 'E-commerce',
+      subtitle: 'Adrian Grahl',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      counter: Math.round(Math.random() * 100),
+      counterText: 'Tasks',
+    },
+    {
+      _id: "a67b1a3b3b7e6d1e0b4e",
+      title: 'Blog',
+      subtitle: 'Adrian Grahl',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      counter: Math.round(Math.random() * 100),
+      counterText: 'Tasks',
+    },
+    {
+      _id: "a67b1a3b3b7e6d1e0b4e",
+      title: 'Portfolio',
+      subtitle: 'Adrian Grahl',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      counter: Math.round(Math.random() * 100),
+      counterText: 'Tasks',
+    },
+    {
+      _id: "a67b1a3b3b7e6d1e0b4e",
       title: 'Admin Panel',
       subtitle: 'Adrian Grahl',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       counter: Math.round(Math.random() * 100),
       counterText: 'Tasks',
-      link: '/admin/projects'
     },
     {
-      title: 'E-Commerce',
+      _id: "a67b1a3b3b7e6d1e0b4e",
+      title: 'E-learning',
       subtitle: 'Adrian Grahl',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       counter: Math.round(Math.random() * 100),
       counterText: 'Tasks',
-      link: '/admin/projects'
-    },
-    {
-      title: 'Blog',
-      subtitle: 'Adrian Grahl',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      counter: Math.round(Math.random() * 100),
-      counterText: 'Tasks',
-      link: '/admin/projects'
-    },
-    {
-      title: 'Blog',
-      subtitle: 'Adrian Grahl',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      counter: Math.round(Math.random() * 100),
-      counterText: 'Tasks',
-      link: '/admin/projects'
-    },
-    {
-      title: 'Blog',
-      subtitle: 'Adrian Grahl',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      counter: Math.round(Math.random() * 100),
-      counterText: 'Tasks',
-      link: '/admin/projects'
     },
   ]
 
@@ -68,7 +68,7 @@ const page = () => {
       <hr />
       <div id='projects-container' className='grid grid-cols-4 grid-rows-3 gap-4 rounded-md'>
         {projects.map((project, index) => (
-          <DefaultCard key={index} title={project.title} subtitle={project.subtitle} description={project.description} counter={Math.round(Math.random() * 100)} counterText={project.counterText} link={project.link} />
+          <DefaultCard key={index} title={project.title} subtitle={project.subtitle} description={project.description} counter={Math.round(Math.random() * 100)} counterText={project.counterText} link={`/projects/${project._id}`} />
         ))}
       </div>
     </div>
