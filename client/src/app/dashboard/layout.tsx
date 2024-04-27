@@ -13,7 +13,9 @@ const AdminLayout = ({children} : {children: ReactNode}) =>{
                 <Sidebar routes={routes} />
                 <main className="w-full">
                     <TopBar/>
-                    {children}
+                    <div className="p-6">   
+                        {children}
+                    </div>
                 </main>
             </div>
         </BreadcrumbProvider>
