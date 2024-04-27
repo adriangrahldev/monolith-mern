@@ -26,7 +26,7 @@ const TopBar = () => {
   }, []);
 
   return (
-    <div className="w-full h-20 px-20  z-10 fixed bg-white border-b-2">
+    <div className="w-full h-20 pr-20  z-10 fixed bg-white border-b-2">
       <div className="h-20 flex justify-between items-center px-6 ">
         <div className="topLeft flex gap-2 text-2xl">
           {breadcrumb.map((item: BCItem, index: number) => (
