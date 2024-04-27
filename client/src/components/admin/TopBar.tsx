@@ -16,8 +16,8 @@ const TopBar = () => {
 
   return (
     <div className="w-full">
-      <div className="h-20 flex justify-between items-center px-6 text-lg">
-        <div className="topLeft flex gap-2">
+      <div className="h-20 flex justify-between items-center px-6 ">
+        <div className="topLeft flex gap-2 text-2xl">
           {breadcrumb.map((item: BCItem, index: number) => (
             <div key={index} className={`${index === 0 ? 'font-bold':'' }`}>
               {item.type === "link" ? (
