@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card, CardContent, CardHeader } from "../ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { ChevronRightIcon } from "@radix-ui/react-icons";
 
 const DefaultCard = ({
@@ -10,6 +10,7 @@ const DefaultCard = ({
   counterText,
   link,
   theme = "light",
+  footer
 }: {
   title: string;
   subtitle?: string;
@@ -18,6 +19,7 @@ const DefaultCard = ({
   counterText?: string;
   link: string;
   theme?: "dark" | "light";
+  footer?: React.ReactNode;
 }) => {
   return (
     <Card className={`${theme === 'dark' ? 'bg-black text-white' : 'bg-white text-black'}`}>
@@ -42,6 +44,7 @@ const DefaultCard = ({
           </span>
         </div>
       </CardContent>
+      {footer && <CardFooter>{footer}</CardFooter>}
     </Card>
   );
 };
