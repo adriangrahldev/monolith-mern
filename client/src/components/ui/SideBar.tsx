@@ -33,7 +33,7 @@ export const SideBar = ({routes}: {routes:any[]}) => {
   }, []);
 
   return (
-    <aside className="w-20 bg-white-800 h-screen border-gray-300 border-r-2">
+    <aside className="fixed w-20 bg-white-800 h-screen border-gray-300 border-r-2">
       <div className="flex items-center justify-center h-20 bg-white-900 border-b-2">
         <Image src="/isologo1.svg" alt="Monolith Logo" width={32} height={32} />
       </div >
