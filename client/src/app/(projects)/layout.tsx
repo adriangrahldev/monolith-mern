@@ -13,7 +13,7 @@ const AdminLayout = ({children} : {children: ReactNode}) =>{
                 <SideBar routes={routes} />
                 <main className="w-full">
                     <TopBar/>
-                    <div className="p-6  mt-20">   
+                    <div className="p-6 ml-20 mt-20">   
                         {children}
                     </div>
                 </main>
