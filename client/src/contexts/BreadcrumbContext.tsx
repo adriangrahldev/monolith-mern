@@ -17,6 +17,10 @@ export const BreadcrumbProvider = ({ children }: {children: ReactNode}) => {
     setBreadcrumb([...breadcrumb, item]);
   };
 
+  const addItems = (items: BreadcrumbItem[]) => {
+    setBreadcrumb([...breadcrumb, ...items]);
+  };
+
   const removeItem = (item: BreadcrumbItem) => {
     setBreadcrumb(breadcrumb.filter(bc => bc !== item));
   };
