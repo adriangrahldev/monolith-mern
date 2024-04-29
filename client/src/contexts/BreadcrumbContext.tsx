@@ -7,6 +7,8 @@ const BreadcrumbContext = createContext({
     breadcrumb: [] as BreadcrumbItem[],
     addItem: (item: BreadcrumbItem) => {},
     addItems: (items: BreadcrumbItem[]) => {},
+    setItems: (items: BreadcrumbItem[]) => {},
+    clearItems: () => {},
     removeItem: (item: BreadcrumbItem) => {},
 });
 
@@ -36,7 +38,7 @@ export const BreadcrumbProvider = ({ children }: {children: ReactNode}) => {
   
 
   return (
-    <BreadcrumbContext.Provider value={{ breadcrumb, addItem, addItems, removeItem }}>
+    <BreadcrumbContext.Provider value={{ breadcrumb, addItem, setItems, clearItems, addItems, removeItem }}>
       {children}
     </BreadcrumbContext.Provider>
   );
