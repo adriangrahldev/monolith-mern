@@ -12,27 +12,27 @@ const ProyectPage = () => {
   const { id } = params;
 
   const project = {
-    _id: "a67b1a3b3b7e6d1e0b4e",
+    _id: "a67b1a3b3b7e6d1se0b4e",
     name: "Landing Page",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     clientName: "John Doe",
     tasks: [
       {
-        _id: "a67b1a3b3b7e6d1e0b4e",
+        _id: "a67b1a3b3b7e6d1de0b4e",
         title: "Create the layout",
         assignee: "Jane Doe",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         status: "in-progress",
       },
       {
-        _id: "a67b1a3b3b7e6d1e0b4e",
+        _id: "a67b1a3b3b17e6d1e0b4e",
         title: "Create the layout",
         assignee: "Jane Doe",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         status: "in-progress",
       },
       {
-        _id: "a67b1a3b3b7e6d1e0b4e",
+        _id: "a67b1a3b3b37e6d1e0b4e",
         title: "Create the layout",
         assignee: "Jane Doe",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -90,7 +90,7 @@ const ProyectPage = () => {
                           <Progress
                             value={Math.floor(Math.random() * 100)}
                             max={100}
-                            
+
                           ></Progress>
                         }
                       />
