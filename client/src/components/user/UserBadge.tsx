@@ -1,10 +1,10 @@
 import { Skeleton } from "../ui/skeleton";
 
-const UserBadge = ({ user }: { user: any }) => {
+const UserBadge = ({ user, className }: { user: any, className: string }) => {
   return (
     <>
       {user ? (
-        <div className="flex gap-2 items-center justify-center rounded-md bg-[#eeeeee] px-4 py-2 w-[250px] h-[55px]">
+        <div className={`flex gap-2 items-center justify-center rounded-md bg-[#eeeeee] px-4 py-2 w-[250px] h-[55px] ${className}`}>
           <div className="">
             <div className="w-[43px] h-[43px] bg-black rounded-full flex items-center justify-center">
               <span className="text-white font-bold text-lg">
