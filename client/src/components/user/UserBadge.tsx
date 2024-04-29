@@ -14,7 +14,7 @@ const UserBadge = ({
   if (variant === "minimalist") {
     return (
       <div
-        className={`flex gap-2 items-center justify-center rounded-md bg-transparent py-2 h-[55px] ${className}`}
+        className={`flex gap-2 items-center justify-center rounded-md bg-transparent px-3 py-2 h-[55px] ${className}`}
       >
         {user ? (
           <div className="w-[43px] h-[43px] bg-black rounded-full flex items-center justify-center">
@@ -30,7 +30,7 @@ const UserBadge = ({
   }
 
   return user ? (
-    <div className="flex gap-2 items-center justify-between rounded-md bg-[#eeeeee] px-4 py-2 w-[250px] h-[55px] ">
+    <div         className={`flex gap-2 items-center justify-center rounded-md bg-[#eeeeee] px-3 py-2 h-[55px] ${className}`}>
       <div className="w-[43px] h-[43px] bg-black rounded-full flex items-center justify-center">
         <span className="text-white font-bold text-lg">
           {user?.name[0] || ""}
