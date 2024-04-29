@@ -45,10 +45,10 @@ const AdminHomePage = () => {
         ])
     }, []);
   return (
-    <div className="este-es-div flex flex-col gap-8">
-      <div className="grid grid-cols-6 gap-4">
-        <DefaultCard title="Clients" counter={2} link="/dashboard/clients" />
-        <DefaultCard title="Projects" counter={7} link="/dashboard/projects" />
+    <div className="flex flex-col gap-8">
+      <div className="grid  gap-4 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3">
+        <DefaultCard title="Clients" counter={2} link="/clients" />
+        <DefaultCard title="Projects" counter={7} link="/projects" />
       </div>
 
       <hr />
