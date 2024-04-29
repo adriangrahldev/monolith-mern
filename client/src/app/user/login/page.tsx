@@ -22,7 +22,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex items-center bg-50">
+    <div className="w-screen h-screen flex items-center bg-50 max-lg:px-2">
       <div className="w-[55%] px-24 text-center max-lg:hidden">
         <p className="text-justify items-center flex flex-col mb-10 mt-10">
           <Image src={"/logotipo1.png"} alt="Logotipo" width={512} height={512} className="w-80" />
