@@ -16,6 +16,7 @@ const menuItems = [
 
 export const SideBar = ({routes}: {routes:any[]}) => {
   const pathname = usePathname();
+  console.log(pathname);
   const { breadcrumb, addItem, removeItem } = useBreadcrumb();
   useEffect(() => {
     addItem(
