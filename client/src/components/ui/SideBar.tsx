@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useBreadcrumb } from '@/contexts/BreadcrumbContext';
-import { useEffect } from "react";
 
 
 const menuItems = [
@@ -17,21 +16,6 @@ const menuItems = [
 export const SideBar = ({ routes }: { routes: any[] }) => {
   const pathname = usePathname();
   const currentPath = '/' + pathname.split('/')[1];
-  const { breadcrumb, addItem, removeItem } = useBreadcrumb();
-  useEffect(() => {
-    addItem(
-      {
-        title: 'Dashboard',
-        link: '/dashboard',
-        icon: 'home',
-        items: [
-          'Dashboard',
-          'Analytics',
-          'Reports'
-        ]
-      }
-    );
-  }, []);
 
   return (
     <aside className="fixed w-20 bg-white-800 h-screen border-gray-300 border-r-2">
