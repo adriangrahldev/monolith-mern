@@ -10,13 +10,13 @@ import { useEffect } from "react";
 
 const menuItems = [
   { name: "Dashboard", path: "/dashboard", icon: faBorderAll },
-  { name: "Projects", path: "/projects", icon: faProjectDiagram }, 
-  { name: "Clients", path: "/clients", icon: faUsers }, 
+  { name: "Projects", path: "/projects", icon: faProjectDiagram },
+  { name: "Clients", path: "/clients", icon: faUsers },
 ];
 
-export const SideBar = ({routes}: {routes:any[]}) => {
+export const SideBar = ({ routes }: { routes: any[] }) => {
   const pathname = usePathname();
-  console.log(pathname);
+  const currentPath = '/' + pathname.split('/')[1];
   const { breadcrumb, addItem, removeItem } = useBreadcrumb();
   useEffect(() => {
     addItem(
@@ -41,7 +41,7 @@ export const SideBar = ({routes}: {routes:any[]}) => {
       <nav >
         <ul>
           {routes.map((item) => (
-            <li key={item.title} className={`flex items-center justify-center h-20 ${pathname === item.path ? 'bg-white-700 text-black' : 'text-gray-400'}`}>
+            <li key={item.title} className={`flex items-center justify-center h-20 ${currentPath === item.path ? 'bg-white-700 text-black' : 'text-gray-400'}`}>
               <Link href={item.path}>
                 <div className="flex flex-col items-center w-full h-full justify-center cursor-pointer">
                   <FontAwesomeIcon icon={item.icon} size="lg" />
