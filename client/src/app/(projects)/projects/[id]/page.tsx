@@ -13,10 +13,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
+import { useEffect } from "react";
 
 const ProyectPage = () => {
   const params = useParams();
   const { id } = params;
+  
+  const { setItems } = useBreadcrumb();
 
   const project = {
     _id: "a67b1a3b3b7e6d1se0b4e",
@@ -47,6 +51,21 @@ const ProyectPage = () => {
       },
     ],
   };
+
+  useEffect(() => {
+    setItems([
+      {
+        title: "Projects",
+        type: "link",
+        link: "/projects",
+      },
+      {
+        title: project.name,
+        type: "link",
+        link: `/projects/${id}`,
+      },
+    ]);
+  }, [id]);
 
   return (
     <div className="h-screen space-y-4">
