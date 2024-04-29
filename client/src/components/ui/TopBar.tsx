@@ -45,7 +45,7 @@ const TopBar = ({ toggleSidebar }: { toggleSidebar: CallableFunction }) => {
   }, []);
 
   return (
-    <div className="w-full pr-4 md:pr-20 h-20 ml-4 md:ml-20 fixed bg-white border-b-2">
+    <div className="w-full pr-4 md:pr-20 h-20  px-4 md:ml-20 max-lg:shadow-sm fixed bg-white border-b-2">
       <div className="h-20 flex justify-between items-center px-2 md:px-6">
         <div className="topLeft flex gap-2 items-center text-lg md:text-2xl">
           <div
@@ -104,8 +104,8 @@ const TopBar = ({ toggleSidebar }: { toggleSidebar: CallableFunction }) => {
         </div>
 
         <UserBadge
-          className={`hidden sm:flex `}
-          variant="minimalist"
+          className={`max-lg:hidden`}
+          variant="default"
           user={user}
         />
       </div>
