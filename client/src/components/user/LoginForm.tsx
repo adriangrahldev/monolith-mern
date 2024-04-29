@@ -13,7 +13,7 @@ const LoginForm = ({handleSubmit}:{handleSubmit: CallableFunction}) => {
      
         <Card>
         <CardHeader>
-          <CardTitle>Sign In</CardTitle>
+          <CardTitle className="max-lg:text-2xl">Sign In</CardTitle>
           <CardDescription>
             <span>
                 Complete the form below to sign in. Don't have an account? <Link href={"/user/register"}> <span className="underline">Sign up here</span></Link>
