@@ -1,76 +1,91 @@
+'use client'
 import { Button } from '@/components/ui/button';
 import { faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DefaultCard from '@/components/admin/DefaultCard';
+import { useEffect } from 'react';
+import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 
-const page = () => {
+const projects = [
+  {
+    _id: "a67b1a3b3b73e6d1e0b4e",
+    title: 'Landing Page',
+    subtitle: 'Adrian Grahl',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    counter: Math.round(Math.random() * 100),
+    counterText: 'Tasks',
+  },
+  {
+    _id: "a67b1a3b3b71e6d1e0b4e",
+    title: 'E-commerce',
+    subtitle: 'Adrian Grahl',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    counter: Math.round(Math.random() * 100),
+    counterText: 'Tasks',
+  },
+  {
+    _id: "a67b1a3b3b7e6d1e05b4e",
+    title: 'Blog',
+    subtitle: 'Adrian Grahl',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    counter: Math.round(Math.random() * 100),
+    counterText: 'Tasks',
+  },
+  {
+    _id: "a67b1a3b3b7e62d1e0b4e",
+    title: 'Portfolio',
+    subtitle: 'Adrian Grahl',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    counter: Math.round(Math.random() * 100),
+    counterText: 'Tasks',
+  },
+  {
+    _id: "a67b1a3b3b7e6d15e0b4e",
+    title: 'Admin Panel',
+    subtitle: 'Adrian Grahl',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    counter: Math.round(Math.random() * 100),
+    counterText: 'Tasks',
+  },
+  {
+    _id: "a67b1a3b3b7e16d1e0b4e",
+    title: 'E-learning',
+    subtitle: 'Adrian Grahl',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    counter: Math.round(Math.random() * 100),
+    counterText: 'Tasks',
+  },
+  {
+    _id: "a67b1a3b3b72e6d1e0b4e",
+    title: 'E-learning',
+    subtitle: 'Adrian Grahl',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    counter: Math.round(Math.random() * 100),
+    counterText: 'Tasks',
+  },
+  {
+    _id: "a67b1a3b3b7e66d1e0b4e",
+    title: 'E-learning',
+    subtitle: 'Adrian Grahl',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    counter: Math.round(Math.random() * 100),
+    counterText: 'Tasks',
+  },
+]
 
-  const projects = [
-    {
-      _id: "a67b1a3b3b73e6d1e0b4e",
-      title: 'Landing Page',
-      subtitle: 'Adrian Grahl',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      counter: Math.round(Math.random() * 100),
-      counterText: 'Tasks',
-    },
-    {
-      _id: "a67b1a3b3b71e6d1e0b4e",
-      title: 'E-commerce',
-      subtitle: 'Adrian Grahl',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      counter: Math.round(Math.random() * 100),
-      counterText: 'Tasks',
-    },
-    {
-      _id: "a67b1a3b3b7e6d1e05b4e",
-      title: 'Blog',
-      subtitle: 'Adrian Grahl',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      counter: Math.round(Math.random() * 100),
-      counterText: 'Tasks',
-    },
-    {
-      _id: "a67b1a3b3b7e62d1e0b4e",
-      title: 'Portfolio',
-      subtitle: 'Adrian Grahl',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      counter: Math.round(Math.random() * 100),
-      counterText: 'Tasks',
-    },
-    {
-      _id: "a67b1a3b3b7e6d15e0b4e",
-      title: 'Admin Panel',
-      subtitle: 'Adrian Grahl',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      counter: Math.round(Math.random() * 100),
-      counterText: 'Tasks',
-    },
-    {
-      _id: "a67b1a3b3b7e16d1e0b4e",
-      title: 'E-learning',
-      subtitle: 'Adrian Grahl',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      counter: Math.round(Math.random() * 100),
-      counterText: 'Tasks',
-    },
-    {
-      _id: "a67b1a3b3b72e6d1e0b4e",
-      title: 'E-learning',
-      subtitle: 'Adrian Grahl',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      counter: Math.round(Math.random() * 100),
-      counterText: 'Tasks',
-    },
-    {
-      _id: "a67b1a3b3b7e66d1e0b4e",
-      title: 'E-learning',
-      subtitle: 'Adrian Grahl',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      counter: Math.round(Math.random() * 100),
-      counterText: 'Tasks',
-    },
-  ]
+
+const ProjectsPage = () => {
+  const { setItems, clearItems } = useBreadcrumb();
+
+  useEffect(() => {
+    clearItems();
+    setItems([{
+      title: "Projects",
+      type: "link",
+      link: "/projects",
+    },])
+  }, [])
+
 
   return (
     <>
@@ -91,4 +106,4 @@ const page = () => {
   )
 }
 
-export default page;
+export default ProjectsPage;
