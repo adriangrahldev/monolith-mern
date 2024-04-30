@@ -7,12 +7,6 @@ import { BreadcrumbProvider, useBreadcrumb } from "@/contexts/BreadcrumbContext"
 import { BottomBar } from "@/components/ui/BottomBar";
 const AdminLayout = ({ children }: { children: ReactNode }) => {
 
-    const [showingSidebar, setShowingSidebar] = useState(false);
-
-    const toggleSidebar = () => {
-        setShowingSidebar(!showingSidebar);
-    }
-
     return (
         <BreadcrumbProvider>
             <div className="flex">
