@@ -20,10 +20,16 @@ import {
 import Link from "next/link";
 import { Button } from "./button";
 
-const TopBar = ({ toggleSidebar }: { toggleSidebar: CallableFunction }) => {
+const TopBar = () => {
   const { breadcrumb, addItem, removeItem } = useBreadcrumb();
   const [user, setUser] = useState<undefined | any>(undefined);
   const [showMobileBreadcrumb, setShowMobileBreadcrumb] = useState(false);
+  const showMenu = () => {
+    //mostrar boton de cerrar sesion
+    console.log('show menu')
+  }
+
+
 
   useEffect(() => {
     setTimeout(() => {
@@ -48,17 +54,6 @@ const TopBar = ({ toggleSidebar }: { toggleSidebar: CallableFunction }) => {
     <div className="w-full pr-4 md:pr-20 h-20  px-4 md:ml-20 max-lg:shadow-sm fixed bg-white border-b-2">
       <div className="h-20 flex justify-between items-center px-2 md:px-6">
         <div className="topLeft flex gap-2 items-center text-lg md:text-2xl">
-          <div
-            className={`font-bold text-black md:hidden sm:hidden flex items-center`}
-          >
-            <Button
-              variant={"ghost"}
-              className="p-0 m-0"
-              onClick={(e) => toggleSidebar()}
-            >
-              <FontAwesomeIcon icon={faBars} />
-            </Button>
-          </div>
           <div className={`font-bold text-black`}>Dashboard</div>
           {breadcrumb.map((item: BCItem, index: number) => (
             <Fragment key={index}>
@@ -108,6 +103,14 @@ const TopBar = ({ toggleSidebar }: { toggleSidebar: CallableFunction }) => {
           variant="default"
           user={user}
         />
+        <div onClick={showMenu} className="cursor-pointer">
+          <UserBadge
+            className={`hidden max-md:flex`}
+            variant="minimalist"
+            user={user}
+          />
+
+        </div>
       </div>
     </div>
   );
