@@ -1,10 +1,29 @@
+'use client'
 import DefaultCard from "@/components/admin/DefaultCard";
 import { Button } from "@/components/ui/button";
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect } from 'react';
+import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
+import { useParams } from "next/navigation";
 
 
-const page = () => {
+const ClientsPage = () => {
+  const params = useParams();
+  const { id } = params;
+  const { setItems, clearItems } = useBreadcrumb();
+
+  useEffect(() => {
+    clearItems();
+    setItems([{
+      title: "Clients",
+      type: "link",
+      link: "/clients",
+    },])
+  }, [])
+
+
+
   const clients = [
     {
       _id: "a67b1a3b3b73e6d1e0b4e",
@@ -56,4 +75,4 @@ const page = () => {
   )
 }
 
-export default page;
+export default ClientsPage;
