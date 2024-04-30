@@ -14,52 +14,74 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
+import { useEffect } from "react";
+
+
+const client = {
+    _id: "a67b1a3b3b7e6d1se0b4e",
+    name: "Jhon Doe",
+    email: "jhon@doe.com",
+    phone: "0971123456",
+    avatar: "https://randomuser.me/api/portraits/men/77.jpg",
+    projects: [
+        {
+            _id: "a67b1a3b3b73e6d1e0b4e",
+            title: 'Landing Page',
+            subtitle: 'Adrian Grahl',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            counter: Math.round(Math.random() * 100),
+            counterText: 'Tasks',
+        },
+        {
+            _id: "a67b1a3b3b71e6d1e0b4e",
+            title: 'E-commerce',
+            subtitle: 'Adrian Grahl',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            counter: Math.round(Math.random() * 100),
+            counterText: 'Tasks',
+        },
+        {
+            _id: "a67b1a3b3b7e6d1e05b4e",
+            title: 'Blog',
+            subtitle: 'Adrian Grahl',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            counter: Math.round(Math.random() * 100),
+            counterText: 'Tasks',
+        },
+        {
+            _id: "a67b1a3b3b7e6d1e05bs4e",
+            title: 'Blog',
+            subtitle: 'Adrian Grahl',
+            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            counter: Math.round(Math.random() * 100),
+            counterText: 'Tasks',
+        },
+    ],
+};
 
 const ProyectPage = () => {
     const params = useParams();
     const { id } = params;
+    const { setItems, clearItems } = useBreadcrumb();
 
-    const client = {
-        _id: "a67b1a3b3b7e6d1se0b4e",
-        name: "Jhon Doe",
-        email: "jhon@doe.com",
-        phone: "0971123456",
-        avatar: "https://randomuser.me/api/portraits/men/77.jpg",
-        projects: [
+
+
+    useEffect(() => {
+        clearItems();
+        setItems([
             {
-                _id: "a67b1a3b3b73e6d1e0b4e",
-                title: 'Landing Page',
-                subtitle: 'Adrian Grahl',
-                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                counter: Math.round(Math.random() * 100),
-                counterText: 'Tasks',
+                title: "Clients",
+                type: "link",
+                link: "/clients",
             },
             {
-                _id: "a67b1a3b3b71e6d1e0b4e",
-                title: 'E-commerce',
-                subtitle: 'Adrian Grahl',
-                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                counter: Math.round(Math.random() * 100),
-                counterText: 'Tasks',
+                title: client.name,
+                type: "link",
+                link: `/client/${id}`,
             },
-            {
-                _id: "a67b1a3b3b7e6d1e05b4e",
-                title: 'Blog',
-                subtitle: 'Adrian Grahl',
-                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                counter: Math.round(Math.random() * 100),
-                counterText: 'Tasks',
-            },
-            {
-                _id: "a67b1a3b3b7e6d1e05bs4e",
-                title: 'Blog',
-                subtitle: 'Adrian Grahl',
-                description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                counter: Math.round(Math.random() * 100),
-                counterText: 'Tasks',
-            },
-        ],
-    };
+        ]);
+    }, [id]);
 
     return (
         <div className="h-screen space-y-4">
