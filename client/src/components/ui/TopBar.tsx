@@ -12,10 +12,12 @@ import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import UserBadge from "../user/UserBadge";
 import { Fragment, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import {
   faBars,
   faChevronRight,
   faCircleDot,
+  faHome
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { Button } from "./button";
@@ -54,18 +56,29 @@ const TopBar = () => {
     <div className="w-full pr-4 md:pr-20 h-20  px-4 md:ml-20 max-lg:shadow-sm fixed bg-white border-b-2">
       <div className="h-20 flex justify-between items-center px-2 md:px-6">
         <div className="topLeft flex gap-2 items-center text-lg md:text-2xl">
-          <div className={`font-bold text-black`}>Dashboard</div>
+          <Link href={"/dashboard"}>
+            <FontAwesomeIcon icon={faHome} className="text-lg md:text-2xl" />
+          </Link>
           {breadcrumb.map((item: BCItem, index: number) => (
+
             <Fragment key={index}>
+              <span>
+                <FontAwesomeIcon icon={faChevronRight} width={8} />
+              </span>
+              {index === 0 && (
+                <BreadcrumbItem key={index}>
+                  <Link href={item.link || "/dashboard"}>
+                    {item.icon}
+                    {item.title}
+                  </Link>
+                </BreadcrumbItem>
+              )}
               {showMobileBreadcrumb && index > 0 ? null : (
                 <Fragment>
-                  <span>
-                    <FontAwesomeIcon icon={faChevronRight} width={8} />
-                  </span>
                   <div
                     className={`font-normal text-sm md:text-lg text-gray-600`}
                   >
-                    {item.type === "link" ? (
+                    {index === 0 ? null : item.type == "link" ? (
                       <BreadcrumbItem key={index}>
                         <Link href={item.link || "/dashboard"}>
                           {item.icon}
@@ -89,7 +102,9 @@ const TopBar = () => {
                         </DropdownMenu>
                       </BreadcrumbItem>
                     ) : (
-                      <BreadcrumbItem key={index}>{item.title}</BreadcrumbItem>
+                      <BreadcrumbItem key={index}>
+                        {item.title}
+                      </BreadcrumbItem>
                     )}
                   </div>
                 </Fragment>
