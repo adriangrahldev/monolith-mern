@@ -16,41 +16,43 @@ import {
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { useEffect } from "react";
 
-const ProyectPage = () => {
+const project = {
+  _id: "a67b1a3b3b7e6d1se0b4e",
+  name: "Landing Page",
+  description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  clientName: "John Doe",
+  tasks: [
+    {
+      _id: "a67b1a3b3b7e6d1de0b4e",
+      title: "Create the layout",
+      assignee: "Jane Doe",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      status: "in-progress",
+    },
+    {
+      _id: "a67b1a3b3b17e6d1e0b4e",
+      title: "Create the layout",
+      assignee: "Jane Doe",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      status: "in-progress",
+    },
+    {
+      _id: "a67b1a3b3b37e6d1e0b4e",
+      title: "Create the layout",
+      assignee: "Jane Doe",
+      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      status: "in-backlog",
+    },
+  ],
+};
+
+const ProjectPage = () => {
   const params = useParams();
   const { id } = params;
-  
+
   const { setItems } = useBreadcrumb();
 
-  const project = {
-    _id: "a67b1a3b3b7e6d1se0b4e",
-    name: "Landing Page",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    clientName: "John Doe",
-    tasks: [
-      {
-        _id: "a67b1a3b3b7e6d1de0b4e",
-        title: "Create the layout",
-        assignee: "Jane Doe",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        status: "in-progress",
-      },
-      {
-        _id: "a67b1a3b3b17e6d1e0b4e",
-        title: "Create the layout",
-        assignee: "Jane Doe",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        status: "in-progress",
-      },
-      {
-        _id: "a67b1a3b3b37e6d1e0b4e",
-        title: "Create the layout",
-        assignee: "Jane Doe",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        status: "in-backlog",
-      },
-    ],
-  };
+
 
   useEffect(() => {
     setItems([
@@ -142,4 +144,4 @@ const ProyectPage = () => {
   );
 };
 
-export default ProyectPage;
+export default ProjectPage;
