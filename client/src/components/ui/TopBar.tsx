@@ -97,19 +97,16 @@ const TopBar = () => {
             </Fragment>
           ))}
         </div>
-
         <UserBadge
           className={`max-lg:hidden`}
           variant="default"
           user={user}
         />
-        <div onClick={showMenu} className="cursor-pointer">
+        <div onClick={showMenu} className="max-md:flex hidden cursor-pointer">
           <UserBadge
-            className={`hidden max-md:flex`}
             variant="minimalist"
             user={user}
           />
-
         </div>
       </div>
     </div>
