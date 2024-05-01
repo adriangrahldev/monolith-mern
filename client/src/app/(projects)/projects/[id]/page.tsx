@@ -63,7 +63,6 @@ const ProjectPage = () => {
       },
       {
         title: project.name,
-        type: "link",
         link: `/projects/${id}`,
       },
     ]);

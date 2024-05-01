@@ -1,6 +1,6 @@
 "use client";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import { BreadcrumbItem, BreadcrumbSeparator } from "./breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "./breadcrumb";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +14,6 @@ import { Fragment, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
-  faBars,
-  faChevronRight,
-  faCircleDot,
   faHome
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
@@ -59,58 +56,44 @@ const TopBar = () => {
           <Link href={"/dashboard"}>
             <FontAwesomeIcon icon={faHome} className="text-lg md:text-2xl" />
           </Link>
-          {breadcrumb.map((item: BCItem, index: number) => (
+          <Breadcrumb>
+            <BreadcrumbList>
+              {breadcrumb.map((item: BCItem, index: number) => {
+                if (showMobileBreadcrumb && index > 0) {
+                  return null;
+                }
 
-            <Fragment key={index}>
-              <span>
-                <FontAwesomeIcon icon={faChevronRight} width={8} />
-              </span>
-              {index === 0 && (
-                <BreadcrumbItem key={index}>
-                  <Link href={item.link || "/dashboard"}>
-                    {item.icon}
-                    {item.title}
-                  </Link>
-                </BreadcrumbItem>
-              )}
-              {showMobileBreadcrumb && index > 0 ? null : (
-                <Fragment>
-                  <div
-                    className={`font-normal text-sm md:text-lg text-gray-600`}
-                  >
-                    {index === 0 ? null : item.type == "link" ? (
-                      <BreadcrumbItem key={index}>
+                return (
+                  <Fragment key={index}>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem key={index} className={`text-sm md:text-lg ${index === 0 ? 'font-bold text-xl' : 'font-normal text-gray-600'}`}>
+                      {item.type === 'link' ? (
                         <Link href={item.link || "/dashboard"}>
-                          {item.icon}
                           {item.title}
                         </Link>
-                      </BreadcrumbItem>
-                    ) : item.type === "dropdown" ? (
-                      <BreadcrumbItem key={index}>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger className="flex breadcrumb-center gap-1">
-                            {item.title}
-                            <ChevronDownIcon />
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="start">
-                            {item.items?.map((item: any, index: number) => (
-                              <DropdownMenuItem key={index}>
-                                {item}
-                              </DropdownMenuItem>
-                            ))}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </BreadcrumbItem>
-                    ) : (
-                      <BreadcrumbItem key={index}>
-                        {item.title}
-                      </BreadcrumbItem>
-                    )}
-                  </div>
-                </Fragment>
-              )}
-            </Fragment>
-          ))}
+                      ) :
+                        item.type === 'dropdown' ? (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger className="flex items-center gap-1">
+                              {item.title}
+                              <ChevronDownIcon />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start">
+                              {item.items?.map((subItem, subIndex) => (
+                                <DropdownMenuItem key={subIndex}>{subItem}</DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        ) : (
+                          <BreadcrumbPage>{item.title}</BreadcrumbPage>
+                        )}
+                    </BreadcrumbItem>
+                  </Fragment>
+                );
+              })}
+            </BreadcrumbList>
+          </Breadcrumb>
+
         </div>
         <UserBadge
           className={`max-lg:hidden`}

@@ -77,8 +77,7 @@ const ProyectPage = () => {
             },
             {
                 title: client.name,
-                type: "link",
-                link: `/client/${id}`,
+                link: `/clients/${id}`,
             },
         ]);
     }, [id]);

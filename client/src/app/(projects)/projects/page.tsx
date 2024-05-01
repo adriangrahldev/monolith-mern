@@ -81,7 +81,6 @@ const ProjectsPage = () => {
     clearItems();
     setItems([{
       title: "Projects",
-      type: "link",
       link: "/projects",
     },])
   }, [])

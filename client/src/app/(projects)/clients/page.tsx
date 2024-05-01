@@ -17,7 +17,6 @@ const ClientsPage = () => {
     clearItems();
     setItems([{
       title: "Clients",
-      type: "link",
       link: "/clients",
     },])
   }, [])
