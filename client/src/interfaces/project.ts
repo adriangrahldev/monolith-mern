@@ -10,6 +10,6 @@ export interface Project {
     endDate: string;
     comments?: string[];
     status: "pending" | "in-progress" | "completed";
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
