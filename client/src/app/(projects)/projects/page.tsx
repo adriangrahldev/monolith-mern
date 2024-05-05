@@ -91,7 +91,7 @@ const ProjectsPage = () => {
       <div id='toolbar' className='w-full flex gap-2 items-center bg-gray-200 rounded-md px-2 h-12 '>
         <Button variant={'ghost'}>
           <FontAwesomeIcon icon={faPlusSquare} className='mr-2' />
-          Add Client
+          Add Project
         </Button>
       </div>
       <hr />
