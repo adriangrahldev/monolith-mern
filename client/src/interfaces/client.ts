@@ -5,6 +5,6 @@ export interface Client {
     email?: string;
     phone?: string;
     avatar?: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
