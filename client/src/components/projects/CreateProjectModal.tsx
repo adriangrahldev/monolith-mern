@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusSquare, faSave } from "@fortawesome/free-solid-svg-icons";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import { Client } from "@/interfaces/client";
 import { Project } from "@/interfaces/project";
