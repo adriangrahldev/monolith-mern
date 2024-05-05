@@ -3,8 +3,9 @@ import { Button } from '@/components/ui/button';
 import { faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DefaultCard from '@/components/admin/DefaultCard';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
+import CreateProjectModal from '@/components/projects/CreateProjectModal';
 
 const projects = [
   {
@@ -76,6 +77,12 @@ const projects = [
 
 const ProjectsPage = () => {
   const { setItems, clearItems } = useBreadcrumb();
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+
+  const toggleCreateModal = () => {
+    setShowCreateModal(!showCreateModal);
+  }
 
   useEffect(() => {
     clearItems();
@@ -89,7 +96,7 @@ const ProjectsPage = () => {
   return (
     <>
       <div id='toolbar' className='w-full flex gap-2 items-center bg-gray-200 rounded-md px-2 h-12 '>
-        <Button variant={'ghost'}>
+        <Button variant={'ghost'} onClick={()=>{toggleCreateModal()}}>
           <FontAwesomeIcon icon={faPlusSquare} className='mr-2' />
           Add Project
         </Button>
@@ -100,6 +107,7 @@ const ProjectsPage = () => {
           <DefaultCard key={index} title={project.title} subtitle={project.subtitle} description={project.description} counter={Math.round(Math.random() * 100)} counterText={project.counterText} link={`/projects/${project._id}`} />
         ))}
       </div>
+      <CreateProjectModal show={showCreateModal} toggle={toggleCreateModal} />
     </>
 
   )
