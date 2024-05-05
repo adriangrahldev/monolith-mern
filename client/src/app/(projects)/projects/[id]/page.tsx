@@ -76,7 +76,7 @@ const ProjectPage = () => {
       >
         <Button variant={"ghost"}>
           <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
-          Add project
+          Add Task
         </Button>
       </div>
       <hr />
