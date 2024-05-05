@@ -6,8 +6,8 @@ export interface Project {
     name: string;
     description: string;
     image?: string;
-    startDate: Date;
-    endDate: Date;
+    startDate: string;
+    endDate: string;
     comments?: string[];
     status: "pending" | "in-progress" | "completed";
     createdAt: Date;
