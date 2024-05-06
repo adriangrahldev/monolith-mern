@@ -7,8 +7,11 @@ import { usePathname } from "next/navigation";
 import { useBreadcrumb } from '@/contexts/BreadcrumbContext';
 import { useEffect } from "react";
 import UserBadge from "../user/UserBadge";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 export const SideBar = ({ routes }: { routes: any[] }) => {
+  const { user, error, isLoading } = useUser();
+
   const pathname = usePathname();
   const currentPath = "/" + pathname.split("/")[1];
 
@@ -33,11 +36,12 @@ export const SideBar = ({ routes }: { routes: any[] }) => {
         </ul>
       </nav>
       <div className="absolute bottom-0 w-full h-28 flex flex-col  justify-center items-center">
-        <UserBadge user={{ name: "Adrian Grahl", email: "adriangrahldev@gmail.com" }} variant="minimalist" className="hidden max-lg:flex" />
-        <Link href={'/user/login'} >
+        <UserBadge user={user} variant="minimalist" className="hidden max-lg:flex" />
+        <Link href={'/api/auth/logout'} >
           Sign Out
         </Link>
       </div>
     </aside>
   );
 };
+

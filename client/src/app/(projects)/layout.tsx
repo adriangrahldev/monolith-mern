@@ -5,7 +5,17 @@ import { ReactNode, useState } from "react";
 import { routes } from "@/routes";
 import { BreadcrumbProvider, useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { BottomBar } from "@/components/ui/BottomBar";
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { redirect } from 'next/navigation'  
+
+
+
 const AdminLayout = ({ children }: { children: ReactNode }) => {
+    const { user, error, isLoading } = useUser();
+    if (isLoading) return <div>Loading...</div>
+    if (error) return <div>{error.message}</div>
+    if (!user) redirect('/api/auth/login')
+
 
     return (
         <BreadcrumbProvider>

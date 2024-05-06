@@ -19,9 +19,13 @@ import {
 import Link from "next/link";
 import { Button } from "./button";
 
+import { useUser } from '@auth0/nextjs-auth0/client';
+
+
+
 const TopBar = () => {
+  const { user, error, isLoading } = useUser();
   const { breadcrumb, addItem, removeItem } = useBreadcrumb();
-  const [user, setUser] = useState<undefined | any>(undefined);
   const [showMobileBreadcrumb, setShowMobileBreadcrumb] = useState(false);
   const showMenu = () => {
     //mostrar boton de cerrar sesion
@@ -30,13 +34,8 @@ const TopBar = () => {
 
 
 
+
   useEffect(() => {
-    setTimeout(() => {
-      setUser({
-        name: "John Doe",
-        email: "contact@adriangrahl.dev",
-      });
-    }, 2000);
 
     const handleResize = () => {
       setShowMobileBreadcrumb(window.innerWidth < 640);
