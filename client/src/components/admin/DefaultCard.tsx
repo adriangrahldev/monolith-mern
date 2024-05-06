@@ -19,7 +19,7 @@ const DefaultCard = ({
   description?: string;
   counter: number;
   counterText?: string;
-  link: string;
+  link?: string;
   theme?: "dark" | "light";
   footer?: React.ReactNode;
   avatar?: string;
@@ -34,9 +34,14 @@ const DefaultCard = ({
             {subtitle && <h3 className={`text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>{subtitle}</h3>}
           </div>
 
+        {
+          link && (
           <Link href={link} className="self-start">
             <ChevronRightIcon className="w-6 h-6" />
           </Link>
+          )
+        }
+
         </div>
       </CardHeader>
       <CardContent>
