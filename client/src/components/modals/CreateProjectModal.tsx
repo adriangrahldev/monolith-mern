@@ -132,13 +132,22 @@ const CreateProjectModal = ({
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="self-end bg-black text-white rounded-md p-2 px-4 focus:outline-none focus:ring-2 hover:scale-95"
-            >
-              <FontAwesomeIcon icon={faSave} className="mr-2" />
-              Register
-            </button>
+            <div className="w-full flex justify-between mt-2">
+              <button
+                type="button"
+                onClick={toggle}
+                className="bg-gray-200 text-black rounded-md p-2 px-4 focus:outline-none focus:ring-2 hover:scale-95"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className=" bg-black text-white rounded-md p-2 px-4 focus:outline-none focus:ring-2 hover:scale-95"
+              >
+                <FontAwesomeIcon icon={faSave} className="mr-2" />
+                Create Project
+              </button>
+            </div>
           </form>
         </CardContent>
       </Card>
