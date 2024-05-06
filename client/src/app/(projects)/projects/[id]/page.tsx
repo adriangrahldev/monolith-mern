@@ -14,7 +14,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Task } from "@/interfaces/task";
+import CreateTaskModal from "@/components/modals/CreateTaskModal";
 
 const project = {
   _id: "a67b1a3b3b7e6d1se0b4e",
@@ -34,7 +36,7 @@ const project = {
       title: "Create the layout",
       assignee: "Jane Doe",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      status: "in-progress",
+      status: "complete",
     },
     {
       _id: "a67b1a3b3b37e6d1e0b4e",
@@ -52,6 +54,18 @@ const ProjectPage = () => {
 
   const { setItems } = useBreadcrumb();
 
+  const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
+
+
+  const toggleCreateTaskModal = () => {
+    setShowCreateTaskModal(!showCreateTaskModal);
+  }
+
+
+  const handleCreateTaskSubmit = (formData: Task) => {
+    console.log(formData);
+    toggleCreateTaskModal();
+  }
 
 
   useEffect(() => {
@@ -69,12 +83,13 @@ const ProjectPage = () => {
   }, [id]);
 
   return (
+    <>
     <div className="h-screen space-y-4">
       <div
         id="toolbar"
         className="w-full flex gap-2 items-center bg-gray-200 rounded-md px-2 h-12"
       >
-        <Button variant={"ghost"}>
+        <Button variant={"ghost"} onClick={ toggleCreateTaskModal } >
           <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
           Add Task
         </Button>
@@ -99,10 +114,10 @@ const ProjectPage = () => {
             </div>
             <div id="tasks" className="flex-1">
               <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold my-4 ">Projects</h2>
+                <h2 className="text-2xl font-bold my-4 ">Tasks</h2>
                 <Select>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Status" />
+                  <SelectTrigger className="w-fit">
+                    <SelectValue placeholder="Filter by" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="progress">In Progres</SelectItem>
@@ -119,11 +134,10 @@ const ProjectPage = () => {
                   >
                     <DefaultCard
                       title={task.title}
-                      subtitle={task.status}
+                      subtitle={task.status === "in-progress" ? "In Progress" : task.status === "in-backlog" ? "In Backlog" : "Complete"}
                       description={task.description}
                       counter={1}
                       counterText={"day"}
-                      link={`/projects/${id}/tasks/${task._id}`}
                       footer={
                         <Progress
                           value={Math.floor(Math.random() * 100)}
@@ -140,6 +154,9 @@ const ProjectPage = () => {
         </Card>
       </div>
     </div>
+    <CreateTaskModal show={showCreateTaskModal} toggle={toggleCreateTaskModal} onSubmit={handleCreateTaskSubmit}/>
+
+    </>
   );
 };
 
