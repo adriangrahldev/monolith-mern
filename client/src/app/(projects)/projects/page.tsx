@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DefaultCard from '@/components/admin/DefaultCard';
 import { useEffect, useState } from 'react';
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
-import CreateProjectModal from '@/components/projects/CreateProjectModal';
+import CreateProjectModal from '@/components/modals/CreateProjectModal';
+import { Project } from '@/interfaces/project';
 
 const projects = [
   {
@@ -84,6 +85,12 @@ const ProjectsPage = () => {
     setShowCreateModal(!showCreateModal);
   }
 
+
+  const handleRegisterSubmit = (formData: Project) => {
+    console.log(formData);
+    toggleCreateModal();
+  }
+
   useEffect(() => {
     clearItems();
     setItems([{
@@ -107,7 +114,7 @@ const ProjectsPage = () => {
           <DefaultCard key={index} title={project.title} subtitle={project.subtitle} description={project.description} counter={Math.round(Math.random() * 100)} counterText={project.counterText} link={`/projects/${project._id}`} />
         ))}
       </div>
-      <CreateProjectModal show={showCreateModal} toggle={toggleCreateModal} />
+      <CreateProjectModal show={showCreateModal} toggle={toggleCreateModal} onSubmit={handleRegisterSubmit}/>
     </>
 
   )

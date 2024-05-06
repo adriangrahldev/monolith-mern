@@ -3,9 +3,11 @@ import DefaultCard from "@/components/admin/DefaultCard";
 import { Button } from "@/components/ui/button";
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { useParams } from "next/navigation";
+import CreateClientModal from "@/components/modals/CreateClientModal";
+import { Client } from "@/interfaces/client";
 
 
 const ClientsPage = () => {
@@ -55,10 +57,22 @@ const ClientsPage = () => {
 
 
   ]
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  const handleRegisterSubmit = (formData: Client) => {
+    console.log(formData);
+    toggleCreateModal();
+  }
+
+  const toggleCreateModal = () => {
+    setShowCreateModal(!showCreateModal);
+  }
+
   return (
     <>
       <div id='toolbar' className='w-full flex gap-2 items-center bg-gray-200 rounded-md px-2 h-12 '>
-        <Button variant={'ghost'}>
+        <Button variant={'ghost'} onClick={toggleCreateModal}>
           <FontAwesomeIcon icon={faPlusSquare} className='mr-2' />
           Add Client
         </Button>
@@ -69,6 +83,8 @@ const ClientsPage = () => {
           <DefaultCard key={index} title={client.name} counter={Math.round(Math.random() * 100)} counterText={'Projects'} avatar={client.avatar} link={`/clients/${client._id}`} />
         ))}
       </div>
+      <CreateClientModal show={showCreateModal} toggle={toggleCreateModal} onSubmit={handleRegisterSubmit} />
+
     </>
 
   )
