@@ -1,6 +1,6 @@
 "use client";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import { BreadcrumbItem, BreadcrumbSeparator } from "./breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "./breadcrumb";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,56 +10,102 @@ import {
 import { BreadcrumbItem as BCItem } from "@/contexts/BreadcrumbItem.interface";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import UserBadge from "../user/UserBadge";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import {
+  faHome
+} from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
+import { Button } from "./button";
 
 const TopBar = () => {
   const { breadcrumb, addItem, removeItem } = useBreadcrumb();
   const [user, setUser] = useState<undefined | any>(undefined);
+  const [showMobileBreadcrumb, setShowMobileBreadcrumb] = useState(false);
+  const showMenu = () => {
+    //mostrar boton de cerrar sesion
+    console.log('show menu')
+  }
+
+
 
   useEffect(() => {
     setTimeout(() => {
       setUser({
         name: "John Doe",
-        email: "contact@adriangrahl.dev"
+        email: "contact@adriangrahl.dev",
       });
     }, 2000);
+
+    const handleResize = () => {
+      setShowMobileBreadcrumb(window.innerWidth < 640);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
-    <div className="w-full h-20 pr-20 ps-20 -z-10 fixed bg-white border-b-2">
-      <div className="h-20 flex justify-between items-center px-6 ">
-        <div className="topLeft flex gap-2 text-2xl">
-          {breadcrumb.map((item: BCItem, index: number) => (
-            <div key={index} className={`${index === 0 ? 'font-bold':'' }`}>
-              {item.type === "link" ? (
-                <BreadcrumbItem key={index}>
-                  {item.icon}
-                  {item.title}
-                </BreadcrumbItem>
-              ) : item.type === "dropdown" ? (
-                <BreadcrumbItem key={index}>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="flex breadcrumb-center gap-1">
-                      {item.title}
-                      <ChevronDownIcon />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                      {item.items?.map((item: any, index: number) => (
-                        <DropdownMenuItem key={index}>{item}</DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </BreadcrumbItem>
-              ) : (
-                <BreadcrumbItem key={index}>{item.title}</BreadcrumbItem>
-              )}
-              {index < breadcrumb.length - 1 && <>/</>}
-            </div>
-          ))}
-        </div>
+    <div className="w-full pr-4 md:pr-20 h-20  px-4 md:ml-20 max-lg:shadow-sm fixed bg-white border-b-2">
+      <div className="h-20 flex justify-between items-center px-2 md:px-6">
+        <div className="topLeft flex gap-2 items-center text-lg md:text-2xl">
+          <Link href={"/dashboard"}>
+            <FontAwesomeIcon icon={faHome} className="text-lg md:text-2xl" />
+          </Link>
+          <Breadcrumb>
+            <BreadcrumbList>
+              {breadcrumb.map((item: BCItem, index: number) => {
+                if (showMobileBreadcrumb && index > 0) {
+                  return null;
+                }
 
-          <UserBadge user={user} />
-        
+                return (
+                  <Fragment key={index}>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem key={index} className={`text-sm md:text-lg ${index === 0 ? 'font-bold text-xl' : 'font-normal text-gray-600'}`}>
+                      {item.type === 'link' ? (
+                        <Link href={item.link || "/dashboard"}>
+                          {item.title}
+                        </Link>
+                      ) :
+                        item.type === 'dropdown' ? (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger className="flex items-center gap-1">
+                              {item.title}
+                              <ChevronDownIcon />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start">
+                              {item.items?.map((subItem, subIndex) => (
+                                <DropdownMenuItem key={subIndex}>{subItem}</DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        ) : (
+                          <BreadcrumbPage>{item.title}</BreadcrumbPage>
+                        )}
+                    </BreadcrumbItem>
+                  </Fragment>
+                );
+              })}
+            </BreadcrumbList>
+          </Breadcrumb>
+
+        </div>
+        <UserBadge
+          className={`max-lg:hidden`}
+          variant="default"
+          user={user}
+        />
+        <div onClick={showMenu} className="max-md:flex hidden cursor-pointer">
+          <UserBadge
+            variant="minimalist"
+            user={user}
+          />
+        </div>
       </div>
     </div>
   );

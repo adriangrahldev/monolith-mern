@@ -6,6 +6,9 @@ import { BreadcrumbItem } from './BreadcrumbItem.interface';
 const BreadcrumbContext = createContext({
     breadcrumb: [] as BreadcrumbItem[],
     addItem: (item: BreadcrumbItem) => {},
+    addItems: (items: BreadcrumbItem[]) => {},
+    setItems: (items: BreadcrumbItem[]) => {},
+    clearItems: () => {},
     removeItem: (item: BreadcrumbItem) => {},
 });
 
@@ -17,12 +20,25 @@ export const BreadcrumbProvider = ({ children }: {children: ReactNode}) => {
     setBreadcrumb([...breadcrumb, item]);
   };
 
+  const addItems = (items: BreadcrumbItem[]) => {
+    setBreadcrumb([...breadcrumb, ...items]);
+  };
+
   const removeItem = (item: BreadcrumbItem) => {
     setBreadcrumb(breadcrumb.filter(bc => bc !== item));
   };
 
+  const setItems = (items: BreadcrumbItem[]) => {
+    setBreadcrumb(items);
+  }
+
+  const clearItems = () => {
+    setBreadcrumb([]);
+  }
+  
+
   return (
-    <BreadcrumbContext.Provider value={{ breadcrumb, addItem, removeItem }}>
+    <BreadcrumbContext.Provider value={{ breadcrumb, addItem, setItems, clearItems, addItems, removeItem }}>
       {children}
     </BreadcrumbContext.Provider>
   );

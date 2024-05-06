@@ -6,41 +6,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useBreadcrumb } from '@/contexts/BreadcrumbContext';
 import { useEffect } from "react";
+import UserBadge from "../user/UserBadge";
 
-
-const menuItems = [
-  { name: "Dashboard", path: "/dashboard", icon: faBorderAll },
-  { name: "Projects", path: "/projects", icon: faProjectDiagram }, 
-  { name: "Clients", path: "/clients", icon: faUsers }, 
-];
-
-export const SideBar = ({routes}: {routes:any[]}) => {
+export const SideBar = ({ routes }: { routes: any[] }) => {
   const pathname = usePathname();
-  const { breadcrumb, addItem, removeItem } = useBreadcrumb();
-  useEffect(() => {
-    addItem(
-      {
-        title: 'Dashboard',
-        link: '/dashboard',
-        icon: 'home',
-        items: [
-          'Dashboard',
-          'Analytics',
-          'Reports'
-        ]
-      }
-    );
-  }, []);
+  const currentPath = "/" + pathname.split("/")[1];
+
 
   return (
-    <aside className="fixed w-20 bg-white-800 h-screen border-gray-300 border-r-2">
-      <div className="flex items-center justify-center h-20 bg-white-900 border-b-2">
+    <aside className="hidden md:block fixed w-20 h-screen border-gray-300 border-r-2">
+      <div className="flex items-center justify-center h-20  border-b-2">
         <Image src="/isologo1.svg" alt="Monolith Logo" width={32} height={32} />
       </div >
       <nav >
         <ul>
           {routes.map((item) => (
-            <li key={item.title} className={`flex items-center justify-center h-20 ${pathname === item.path ? 'bg-white-700 text-black' : 'text-gray-400'}`}>
+            <li key={item.title} className={`flex items-center justify-center h-20 ${currentPath === item.path ? 'text-black' : 'text-gray-400'}`}>
               <Link href={item.path}>
                 <div className="flex flex-col items-center w-full h-full justify-center cursor-pointer">
                   <FontAwesomeIcon icon={item.icon} size="lg" />
@@ -51,6 +32,12 @@ export const SideBar = ({routes}: {routes:any[]}) => {
           ))}
         </ul>
       </nav>
+      <div className="absolute bottom-0 w-full h-28 flex flex-col  justify-center items-center">
+        <UserBadge user={{ name: "Adrian Grahl", email: "adriangrahldev@gmail.com" }} variant="minimalist" className="hidden max-lg:flex" />
+        <Link href={'/user/login'} >
+          Sign Out
+        </Link>
+      </div>
     </aside>
   );
 };

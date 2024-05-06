@@ -13,7 +13,7 @@ const RegisterForm = ({handleSubmit}:{handleSubmit: CallableFunction}) => {
      
         <Card>
         <CardHeader>
-          <CardTitle>Sign Up</CardTitle>
+          <CardTitle className="max-lg:text-2xl"> Sign Up</CardTitle>
           <CardDescription>
             <span>
               Complete the form below to create an account. Already have an account? <Link href={"/user/login"}> <span className="underline">Sign in here</span></Link>
@@ -23,21 +23,13 @@ const RegisterForm = ({handleSubmit}:{handleSubmit: CallableFunction}) => {
         <CardContent>
           <form onSubmit={(e)=> handleSubmit(e)}>
             <div className="grid w-full items-center gap-2">
-              <div className="flex justify-between gap-4">
+              <div className="flex max-lg:flex-col justify-between gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="firstname">First Name</Label>
+                <Label htmlFor="fullname">Full Name</Label>
                 <Input
                   type="text"
-                  id="firstname"
-                  placeholder="What's your first name?"
-                />
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="lastname">Last Name</Label>
-                <Input
-                  type="text"
-                  id="lastname"
-                  placeholder="What's your last name?"
+                  id="fullname"
+                  placeholder="What's your name?"
                 />
               </div>
               </div>
@@ -75,7 +67,7 @@ const RegisterForm = ({handleSubmit}:{handleSubmit: CallableFunction}) => {
               <div className="flex flex-col px-[2px] text-center">
                 <Button variant={'outline'} className="flex-1 flex gap-2">
                     <FontAwesomeIcon icon={faGoogle} className="h-6 w-6"></FontAwesomeIcon>
-                    Sign in with Google
+                    Sign up with Google
                 </Button>
               </div>
             </div>
