@@ -24,7 +24,9 @@ const CreateClientModal = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(formData);
-    onSubmit(formData);
+    if (onSubmit) {
+      onSubmit(formData);
+    }
   };
 
   const onChange = (
@@ -46,18 +48,22 @@ const CreateClientModal = ({
         </CardHeader>
         <CardContent>
           <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
-            <input
-              type="text"
-              placeholder="Client Name"
-              className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
-              name="name"
-              value={formData.name}
-              onChange={onChange}
-              required
-            />
+            <div className="flex flex-col">
+              <label className="text-gray-400 text-sm font-semibold mb-1">
+                Client Name
+              </label>
+              <input
+                type="text"
+                className="flex-1 border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
+                name="name"
+                value={formData.name}
+                onChange={onChange}
+                required
+              />
+            </div>
 
-            <div className="flex gap-2">
-              <div className="flex flex-col flex-1">
+            <div className="grid grid-cols-2 gap-2">
+              <div className="flex flex-col">
                 <label className="text-gray-400 text-sm font-semibold mb-1">
                   Email
                 </label>
@@ -67,10 +73,9 @@ const CreateClientModal = ({
                   value={formData.email}
                   onChange={onChange}
                   className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
-                  required
                 />
               </div>
-              <div className=" flex flex-col flex-1">
+              <div className=" flex flex-col">
                 <label className="text-gray-400 text-sm font-semibold mb-1">
                   Phone
                 </label>
@@ -80,18 +85,25 @@ const CreateClientModal = ({
                   value={formData.phone}
                   onChange={onChange}
                   className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
-                  required
                 />
               </div>
             </div>
-
-            <button
-              type="submit"
-              className="self-end bg-black text-white rounded-md p-2 px-4 focus:outline-none focus:ring-2 hover:scale-95"
-            >
-              <FontAwesomeIcon icon={faSave} className="mr-2" />
-              Create Client
-            </button>
+            <div className="w-full flex justify-between mt-2">
+              <button
+                type="button"
+                onClick={toggle}
+                className="bg-gray-200 text-black rounded-md p-2 px-4 focus:outline-none focus:ring-2 hover:scale-95"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className=" bg-black text-white rounded-md p-2 px-4 focus:outline-none focus:ring-2 hover:scale-95"
+              >
+                <FontAwesomeIcon icon={faSave} className="mr-2" />
+                Create Client
+              </button>
+            </div>
           </form>
         </CardContent>
       </Card>
