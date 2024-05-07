@@ -2,6 +2,8 @@ import express, { urlencoded } from "express";
 import cors from "cors";
 import userRoutes from "../routes/user.routes";
 import clientRoutes from "../routes/client.routes";
+import projectRoutes from "../routes/project.routes";
+import commentRoutes from "../routes/comment.routes";
 import dotenv from "dotenv";
 import errorHandler from "../middleware/errorHandler";
 dotenv.config();
@@ -23,10 +25,12 @@ app.use(
   })
 );
 
-app.use("/api/clients", clientRoutes);
 
 // Rutas
 app.use("/api/user", userRoutes);
+app.use("/api/clients", clientRoutes);
+app.use("/api/projects", projectRoutes);
+app.use("/api/comments", commentRoutes);
 
 app.use(errorHandler);
 
