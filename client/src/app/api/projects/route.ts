@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
   const { accessToken } = await getAccessToken();
   const body = await req.json();
   console.log(body);
-  const response = await fetch(`${apiURL}/api/api/projects`, {
+  const response = await fetch(`${apiURL}/api/projects`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
