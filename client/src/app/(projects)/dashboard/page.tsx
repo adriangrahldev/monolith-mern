@@ -6,12 +6,13 @@ import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { useEffect, useState } from "react";
 
 const AdminHomePage = () => {
-  const { clearItems, setItems } = useBreadcrumb();
+  const { clearItems } = useBreadcrumb();
+
 
   useEffect(() => {
     clearItems();
 
-  }, [])
+  }, [clearItems])
 
 
   const [pendingTasks, setPendingTasks] = useState<any>([])
