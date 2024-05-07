@@ -1,123 +1,116 @@
-'use client'
-import { Button } from '@/components/ui/button';
-import { faPlusSquare } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import DefaultCard from '@/components/admin/DefaultCard';
-import { useEffect, useState } from 'react';
+"use client";
+import { Button } from "@/components/ui/button";
+import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import DefaultCard from "@/components/admin/DefaultCard";
+import { useCallback, useEffect, useState } from "react";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
-import CreateProjectModal from '@/components/modals/CreateProjectModal';
-import { Project } from '@/interfaces/project';
-
-const projects = [
-  {
-    _id: "a67b1a3b3b73e6d1e0b4e",
-    title: 'Landing Page',
-    subtitle: 'Adrian Grahl',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    counter: Math.round(Math.random() * 100),
-    counterText: 'Tasks',
-  },
-  {
-    _id: "a67b1a3b3b71e6d1e0b4e",
-    title: 'E-commerce',
-    subtitle: 'Adrian Grahl',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    counter: Math.round(Math.random() * 100),
-    counterText: 'Tasks',
-  },
-  {
-    _id: "a67b1a3b3b7e6d1e05b4e",
-    title: 'Blog',
-    subtitle: 'Adrian Grahl',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    counter: Math.round(Math.random() * 100),
-    counterText: 'Tasks',
-  },
-  {
-    _id: "a67b1a3b3b7e62d1e0b4e",
-    title: 'Portfolio',
-    subtitle: 'Adrian Grahl',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    counter: Math.round(Math.random() * 100),
-    counterText: 'Tasks',
-  },
-  {
-    _id: "a67b1a3b3b7e6d15e0b4e",
-    title: 'Admin Panel',
-    subtitle: 'Adrian Grahl',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    counter: Math.round(Math.random() * 100),
-    counterText: 'Tasks',
-  },
-  {
-    _id: "a67b1a3b3b7e16d1e0b4e",
-    title: 'E-learning',
-    subtitle: 'Adrian Grahl',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    counter: Math.round(Math.random() * 100),
-    counterText: 'Tasks',
-  },
-  {
-    _id: "a67b1a3b3b72e6d1e0b4e",
-    title: 'E-learning',
-    subtitle: 'Adrian Grahl',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    counter: Math.round(Math.random() * 100),
-    counterText: 'Tasks',
-  },
-  {
-    _id: "a67b1a3b3b7e66d1e0b4e",
-    title: 'E-learning',
-    subtitle: 'Adrian Grahl',
-    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    counter: Math.round(Math.random() * 100),
-    counterText: 'Tasks',
-  },
-]
-
+import CreateProjectModal from "@/components/modals/CreateProjectModal";
+import { Project } from "@/interfaces/project";
+import { useUser } from "@auth0/nextjs-auth0/client";
+import { useRouter } from "next/navigation";
+import moment from "moment";
 
 const ProjectsPage = () => {
+  const router = useRouter();
+  const { user } = useUser();
   const { setItems, clearItems } = useBreadcrumb();
+  const [projects, setProjects] = useState<Project[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
+  const fetchProjects = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/projects?userId=${user?.sub}`);
+      const data = await res.json();
+      if (res.status === 401) {
+        router.push("/api/auth/login");
+      }
+      if (res.status === 200) {
+        setProjects(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [user, router]);
 
   const toggleCreateModal = () => {
     setShowCreateModal(!showCreateModal);
-  }
+  };
 
-
-  const handleRegisterSubmit = (formData: Project) => {
+  const handleRegisterSubmit = async  (formData: Project) => {
     console.log(formData);
+    console.log(user);
+
+    formData.userId = user?.sub as string;
+
+    try {
+      const res = await fetch('/api/projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+    fetchProjects();
     toggleCreateModal();
-  }
+  };
 
   useEffect(() => {
     clearItems();
-    setItems([{
-      title: "Projects",
-      link: "/projects",
-    },])
-  }, [])
-
+    setItems([
+      {
+        title: "Projects",
+        link: "/projects",
+      },
+    ]);
+    fetchProjects();
+  }, [fetchProjects, setItems, clearItems])
 
   return (
     <>
-      <div id='toolbar' className='w-full flex gap-2 items-center bg-gray-200 rounded-md px-2 h-12 '>
-        <Button variant={'ghost'} onClick={()=>{toggleCreateModal()}}>
-          <FontAwesomeIcon icon={faPlusSquare} className='mr-2' />
+      <div
+        id="toolbar"
+        className="w-full flex gap-2 items-center bg-gray-200 rounded-md px-2 h-12 "
+      >
+        <Button
+          variant={"ghost"}
+          onClick={() => {
+            toggleCreateModal();
+          }}
+        >
+          <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
           Add Project
         </Button>
       </div>
       <hr />
-      <div id='projects-container' className='grid xl:grid-cols-4 grid-rows-3 gap-4 rounded-md lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 '>
+      <div
+        id="projects-container"
+        className="grid xl:grid-cols-4 grid-rows-3 gap-4 rounded-md lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 "
+      >
         {projects.map((project, index) => (
-          <DefaultCard key={index} title={project.title} subtitle={project.subtitle} description={project.description} counter={Math.round(Math.random() * 100)} counterText={project.counterText} link={`/projects/${project._id}`} />
+          <DefaultCard
+            key={index}
+            title={project.name}
+            subtitle={moment(project.createdAt).format("DD/MM/YYYY")}
+            description={project.description}
+            counter={project.tasksCounter || 0}
+            counterText={"Tasks"}
+            link={`/projects/${project._id}`}
+          />
         ))}
       </div>
-      <CreateProjectModal show={showCreateModal} toggle={toggleCreateModal} onSubmit={handleRegisterSubmit}/>
+      <CreateProjectModal
+        show={showCreateModal}
+        toggle={toggleCreateModal}
+        onSubmit={handleRegisterSubmit}
+      />
     </>
-
-  )
-}
+  );
+};
 
 export default ProjectsPage;
