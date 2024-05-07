@@ -1,41 +1,42 @@
 "use client"
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useState } from 'react';
 import { BreadcrumbItem } from './BreadcrumbItem.interface';
 
 // Paso 2: Crear un nuevo contexto para el breadcrumb
 const BreadcrumbContext = createContext({
-    breadcrumb: [] as BreadcrumbItem[],
-    addItem: (item: BreadcrumbItem) => {},
-    addItems: (items: BreadcrumbItem[]) => {},
-    setItems: (items: BreadcrumbItem[]) => {},
-    clearItems: () => {},
-    removeItem: (item: BreadcrumbItem) => {},
+  breadcrumb: [] as BreadcrumbItem[],
+  addItem: (item: BreadcrumbItem) => { },
+  addItems: (items: BreadcrumbItem[]) => { },
+  setItems: (items: BreadcrumbItem[]) => { },
+  clearItems: () => { },
+  removeItem: (item: BreadcrumbItem) => { },
 });
 
 // Paso 3: Crear un proveedor para este contexto
-export const BreadcrumbProvider = ({ children }: {children: ReactNode}) => {
+export const BreadcrumbProvider = ({ children }: { children: ReactNode }) => {
   const [breadcrumb, setBreadcrumb] = useState<BreadcrumbItem[]>([]);
 
-  const addItem = (item: BreadcrumbItem) => {
-    setBreadcrumb([...breadcrumb, item]);
-  };
+  const addItem = useCallback((item: BreadcrumbItem) => {
+    setBreadcrumb((prevBreadcrumb) => [...prevBreadcrumb, item]);
+  }, []);
 
-  const addItems = (items: BreadcrumbItem[]) => {
-    setBreadcrumb([...breadcrumb, ...items]);
-  };
+  const addItems = useCallback((items: BreadcrumbItem[]) => {
+    setBreadcrumb((prevBreadcrumb) => [...prevBreadcrumb, ...items]);
+  }, []);
 
-  const removeItem = (item: BreadcrumbItem) => {
-    setBreadcrumb(breadcrumb.filter(bc => bc !== item));
-  };
-
-  const setItems = (items: BreadcrumbItem[]) => {
+  const setItems = useCallback((items: BreadcrumbItem[]) => {
     setBreadcrumb(items);
-  }
+  }, []);
 
-  const clearItems = () => {
+  const clearItems = useCallback(() => {
     setBreadcrumb([]);
-  }
-  
+  }, []);
+
+  const removeItem = useCallback((item: BreadcrumbItem) => {
+    setBreadcrumb((prevBreadcrumb) => prevBreadcrumb.filter(bc => bc !== item));
+  }, []);
+
+
 
   return (
     <BreadcrumbContext.Provider value={{ breadcrumb, addItem, setItems, clearItems, addItems, removeItem }}>
