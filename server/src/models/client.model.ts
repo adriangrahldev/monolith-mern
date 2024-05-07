@@ -18,8 +18,6 @@ export const clientSchema = new Schema<IClient>({
   userId: { type: String, required: true },
   avatar: { type: String },
   projectsCounter: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
+}, { timestamps: true });
 
 export default model<IClient>("Client", clientSchema);
