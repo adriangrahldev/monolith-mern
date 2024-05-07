@@ -3,17 +3,34 @@ import DefaultCard from "@/components/admin/DefaultCard";
 import { Button } from "@/components/ui/button";
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
-import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import CreateClientModal from "@/components/modals/CreateClientModal";
 import { Client } from "@/interfaces/client";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 
 const ClientsPage = () => {
-  const params = useParams();
-  const { id } = params;
+  const router = useRouter();
+  const { user } = useUser();
   const { setItems, clearItems } = useBreadcrumb();
+
+  const [clients, setClients] = useState<Client[]>([]);
+  const fetchClients = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/clients?userId=${user?.sub}`);
+      const data = await res.json();
+      if (res.status === 401) {
+        router.push('/api/auth/login');
+      }
+      if (res.status === 200) {
+        setClients(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [user, router])
 
   useEffect(() => {
     clearItems();
@@ -21,47 +38,32 @@ const ClientsPage = () => {
       title: "Clients",
       link: "/clients",
     },])
-  }, [])
+    fetchClients();
+  }, [fetchClients, setItems, clearItems])
 
-
-
-  const clients = [
-    {
-      _id: "a67b1a3b3b73e6d1e0b4e",
-      name: 'Adrian Grahl',
-      totalProjects: 5,
-      avatar: 'https://randomuser.me/api/portraits/men/77.jpg'
-    },
-    {
-      _id: "a67b1a3b3b73e6d1e0b4e",
-      name: 'Adrian Grahl',
-      totalProjects: 5,
-      avatar: 'https://randomuser.me/api/portraits/men/78.jpg'
-
-    },
-    {
-      _id: "a67b1a3b3b73e6d1e0b4e",
-      name: 'Adrian Grahl',
-      totalProjects: 5,
-    },
-    {
-      _id: "a67b1a3b3b73e6d1e0b4e",
-      name: 'Adrian Grahl',
-      totalProjects: 5,
-    },
-    {
-      _id: "a67b1a3b3b73e6d1e0b4e",
-      name: 'Adrian Grahl',
-      totalProjects: 5,
-    },
-
-
-  ]
 
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const handleRegisterSubmit = (formData: Client) => {
+  const handleRegisterSubmit = async (formData: Client) => {
     console.log(formData);
+    console.log(user);
+
+    formData.userId = user?.sub as string;
+
+    try {
+      const res = await fetch('/api/clients', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+
     toggleCreateModal();
   }
 
@@ -80,7 +82,7 @@ const ClientsPage = () => {
       <hr />
       <div id='projects-container' className='grid xl:grid-cols-4 grid-rows-3 gap-4 rounded-md lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 '>
         {clients.map((client, index) => (
-          <DefaultCard key={index} title={client.name} counter={Math.round(Math.random() * 100)} counterText={'Projects'} avatar={client.avatar} link={`/clients/${client._id}`} />
+          <DefaultCard key={index} title={client.name} counter={client.projectsCounter} counterText={'Projects'} avatar={client.avatar} link={`/clients/${client._id}`} />
         ))}
       </div>
       <CreateClientModal show={showCreateModal} toggle={toggleCreateModal} onSubmit={handleRegisterSubmit} />
