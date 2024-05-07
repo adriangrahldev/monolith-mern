@@ -3,10 +3,10 @@ import DefaultCard from "@/components/admin/DefaultCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { faPen, faPlusSquare, faRecycle, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faBriefcase, faPen, faPlusSquare, faRecycle, faTrash, faUser, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
     Select,
     SelectContent,
@@ -15,59 +15,41 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 
-const client = {
-    _id: "a67b1a3b3b7e6d1se0b4e",
-    name: "Jhon Doe",
-    email: "jhon@doe.com",
-    phone: "0971123456",
-    avatar: "https://randomuser.me/api/portraits/men/77.jpg",
-    projects: [
-        {
-            _id: "a67b1a3b3b73e6d1e0b4e",
-            title: 'Landing Page',
-            subtitle: 'Adrian Grahl',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            counter: Math.round(Math.random() * 100),
-            counterText: 'Tasks',
-        },
-        {
-            _id: "a67b1a3b3b71e6d1e0b4e",
-            title: 'E-commerce',
-            subtitle: 'Adrian Grahl',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            counter: Math.round(Math.random() * 100),
-            counterText: 'Tasks',
-        },
-        {
-            _id: "a67b1a3b3b7e6d1e05b4e",
-            title: 'Blog',
-            subtitle: 'Adrian Grahl',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            counter: Math.round(Math.random() * 100),
-            counterText: 'Tasks',
-        },
-        {
-            _id: "a67b1a3b3b7e6d1e05bs4e",
-            title: 'Blog',
-            subtitle: 'Adrian Grahl',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            counter: Math.round(Math.random() * 100),
-            counterText: 'Tasks',
-        },
-    ],
-};
+
 
 const ProyectPage = () => {
+    const router = useRouter();
     const params = useParams();
     const { id } = params;
     const { setItems, clearItems } = useBreadcrumb();
+    const [client, setClient] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        avatar: "",
+        projects: [{ _id: "", title: "", counter: 0 }],
+    });
 
-
+    const fetchClient = useCallback(async () => {
+        try {
+            const res = await fetch(`/api/clients?clientId=${id}`);
+            const data = await res.json();
+            if (res.status === 401) {
+                router.push('/api/auth/login');
+            }
+            if (res.status === 200) {
+                setClient(data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }, [id, router]);
 
     useEffect(() => {
+        fetchClient();
         clearItems();
         setItems([
             {
@@ -80,7 +62,7 @@ const ProyectPage = () => {
                 link: `/clients/${id}`,
             },
         ]);
-    }, [id]);
+    }, [id, clearItems, setItems, client.name, fetchClient]);
 
     return (
         <div className="h-screen space-y-4">
@@ -112,7 +94,21 @@ const ProyectPage = () => {
                                 {client.name}
                             </h2>
                             <div className="flex align-middle justify-center">
-                                <Image src={client.avatar} alt="avatar" width={70} height={70} className="rounded-full h-fit" />
+                                {
+                                    client.avatar ?
+                                        <div className="w-20 h-20 bg-gray-300 rounded-full">
+                                            <Image
+                                                src={client.avatar}
+                                                alt={client.name}
+                                                layout="fill"
+                                                objectFit="cover"
+                                                className="rounded-full"
+                                            />
+                                        </div>
+                                        : <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center">
+                                            <FontAwesomeIcon icon={faUserCircle} size="3x" />
+                                        </div>
+                                }
                             </div>
                             <div id="email">
                                 <h2 className="text-lg font-bold">Email:</h2>
@@ -138,25 +134,31 @@ const ProyectPage = () => {
                                 </Select>
                             </div>
                             <div className="grid grid-cols-1  md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                                {client.projects.map((project) => (
-                                    <div
-                                        key={project._id}
-                                        className="hover:bg-gray-100"
-                                    >
-                                        <DefaultCard
-                                            title={project.title}
-                                            counter={project.counter}
-                                            counterText={"Tasks"}
-                                            link={`/projects/${project._id}`}
-                                            footer={
-                                                <Progress
-                                                    value={Math.floor(Math.random() * 100)}
-                                                    max={100}
-                                                > </Progress>
-                                            }
-                                        />
+                                {!client.projects ?
+                                    <div className="col-span-3 text-center">
+                                        <FontAwesomeIcon icon={faBriefcase} size="5x" />
+                                        <h2 className="text-2xl font-bold">No projects found</h2>
                                     </div>
-                                ))}
+                                    :
+                                    client.projects.map((project) => (
+                                        <div
+                                            key={project._id}
+                                            className="hover:bg-gray-100"
+                                        >
+                                            <DefaultCard
+                                                title={project.title}
+                                                counter={project.counter}
+                                                counterText={"Tasks"}
+                                                link={`/projects/${project._id}`}
+                                                footer={
+                                                    <Progress
+                                                        value={Math.floor(Math.random() * 100)}
+                                                        max={100}
+                                                    > </Progress>
+                                                }
+                                            />
+                                        </div>
+                                    ))}
                             </div>
                         </div>
                     </CardContent>
