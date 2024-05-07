@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
@@ -16,9 +16,8 @@ const CreateProjectModal = ({
   onSubmit?: (formData: Project) => void;
 }) => {
   const [formData, setFormData] = useState<Project>({
-    _id: "",
-    userID: "",
-    clientID: "",
+    userId: "",
+    clientId: "",
     name: "",
     description: "",
     startDate: moment().format("YYYY-MM-DD"),
@@ -26,30 +25,29 @@ const CreateProjectModal = ({
     status: "pending",
   });
 
-  const [clients, setClients] = useState<Client[]>([
-    {
-      _id: "1",
-      userId: "151321",
-      name: "Adrian Grahl",
-      email: "client1@gmail.com",
-      phone: "123456789",
-    },
-    {
-      _id: "2",
-      userId: "151322",
-      name: "John Doe",
-      email: "clien2@gmail.com",
-      phone: "123456789",
-    },
-  ]);
+  const [clients, setClients] = useState<Client[]>([]);
+
+  const fetchClients = async () => {
+    try {
+      const res = await fetch("/api/clients");
+      const data = await res.json();
+      if (res.status === 200) {
+        setClients(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(formData);
+    if (onSubmit) onSubmit(formData);
+      
   };
 
+  
   const onChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     const formattedValue =
@@ -63,6 +61,10 @@ const CreateProjectModal = ({
     });
   };
 
+  useEffect(() => {
+    fetchClients();
+  }, []);
+
   return show ? (
     <div className="fixed w-screen h-screen top-0 left-0 flex items-center justify-center">
       <div className="fixed w-screen h-screen bg-black opacity-50"></div>
@@ -75,6 +77,9 @@ const CreateProjectModal = ({
             <select
               className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
               required
+              name="clientId"
+              value={(formData.client as string)}
+              onChange={onChange}
             >
               <option value="" disabled selected>
                 Select Client
