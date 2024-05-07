@@ -5,4 +5,5 @@ export interface Client {
   email?: string;
   phone?: string;
   avatar?: string;
+  projectsCounter: number;
 }

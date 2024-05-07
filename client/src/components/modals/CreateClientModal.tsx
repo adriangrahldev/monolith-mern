@@ -19,6 +19,7 @@ const CreateClientModal = ({
     name: "",
     email: "",
     phone: "",
+    projectsCounter: 0,
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
