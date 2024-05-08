@@ -1,12 +1,12 @@
-"use client"
+"use client";
+// Importaciones de librerías y componentes externos
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter, useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import moment from "moment";
-import Image from "next/image";
 
+// Importaciones de componentes y contextos propios
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -18,37 +18,75 @@ import {
 } from "@/components/ui/select";
 import CreateTaskModal from "@/components/modals/CreateTaskModal";
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
+
+// Importaciones de interfaces
 import { Task } from "@/interfaces/task";
 import { Project } from "@/interfaces/project";
 import { Client } from "@/interfaces/client";
 
+// Importaciones de componentes de terceros
+import ProjectTaskTable from "@/components/tasks/ProjectTaskTable";
+import CommentsPanel from "@/components/projects/comments/CommentsPanel";
+
+// Componente principal
 const ProjectPage = () => {
-  const user = useUser();
+  // Hooks de estado
+  const [project, setProject] = useState<Project | undefined>();
+  const [commentContent, setCommentContent] = useState("");
+  const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  // Hooks de contexto
+  const { setItems } = useBreadcrumb();
+
+  // Hooks de routing
   const router = useRouter();
   const params = useParams();
   const { id } = params;
 
-  const [project, setProject] = useState<Project | undefined>();
-  const [commentContent, setCommentContent] = useState("");
-  const { setItems } = useBreadcrumb();
-
-  const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
+  // Hook de autenticación
+  const { user } = useUser();
 
   const toggleCreateTaskModal = () => {
     setShowCreateTaskModal(!showCreateTaskModal);
   };
 
-  const handleCreateTaskSubmit = (formData: Task) => {
-    console.log(formData);
+  const handleCreateTaskSubmit = async (formData: Task) => {
+    const data = {
+      ...formData,
+      projectId: id,
+      userId: user?.sub as string,
+    };
+
+    try {
+      const res = await fetch(`/api/tasks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (res.status === 401) {
+        router.push("/api/auth/login");
+      }
+      fetchProject();
+    } catch (error) {
+      console.log(error);
+    }
+
     toggleCreateTaskModal();
   };
 
-  const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleStatusFilterChange = (value: string) => {
+    setStatusFilter(value);
+  };
+
+  const handleCommentSubmit = async (content: string) => {
     const data = {
-      content: commentContent,
+      content: content,
       admin: true,
-      author: user.user?.nickname || "Admin",
+      author: user?.nickname || "Admin",
       clientId: "",
       projectId: id,
     };
@@ -70,6 +108,21 @@ const ProjectPage = () => {
       console.log(error);
     }
   };
+
+  const fetchTasks = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/tasks?projectId=${id}`);
+      const data = await res.json();
+      if (res.status === 401) {
+        router.push("/api/auth/login");
+      }
+      if (res.status === 200) {
+        setTasks(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [id, router]);
 
   const fetchProject = useCallback(async () => {
     try {
@@ -103,6 +156,10 @@ const ProjectPage = () => {
   useEffect(() => {
     fetchProject();
   }, [fetchProject]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
   return (
     <>
@@ -138,39 +195,26 @@ const ProjectPage = () => {
                 <div id="tasks" className="flex-1">
                   <div className="flex justify-between items-center">
                     <h2 className="text-2xl font-bold my-4 ">Tasks</h2>
-                    <Select>
+                    <Select
+                      value={statusFilter}
+                      onValueChange={handleStatusFilterChange}
+                    >
                       <SelectTrigger className="w-fit">
                         <SelectValue placeholder="Filter by" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="progress">In Progres</SelectItem>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="in-backlog">Backlog</SelectItem>
+                        <SelectItem value="in-progress">In Progres</SelectItem>
                         <SelectItem value="complete">Complete</SelectItem>
-                        <SelectItem value="confirm">To Confirm</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {/* {project.tasks.map((task) => (
-                      <div
-                        key={task._id}
-                        className="hover:bg-gray-100"
-                      >
-                        <DefaultCard
-                          title={task.title}
-                          subtitle={task.status === "in-progress" ? "In Progress" : task.status === "in-backlog" ? "In Backlog" : "Complete"}
-                          description={task.description}
-                          counter={1}
-                          counterText={"day"}
-                          footer={
-                            <Progress
-                              value={Math.floor(Math.random() * 100)}
-                              max={100}
-
-                            ></Progress>
-                          }
-                        />
-                      </div>
-                    ))} */}
+                  <div className="">
+                    <ProjectTaskTable
+                      tasks={tasks}
+                      statusFilter={statusFilter}
+                    />
                   </div>
                 </div>
               </CardContent>
@@ -179,62 +223,13 @@ const ProjectPage = () => {
         </div>
         <h1 className="text-3xl font-bold mt-4">Comments</h1>
         <div id="comments-container">
-          <Card>
-            <CardContent className="pt-4">
-              <div id="comments">
-                {project?.comments?.length ? (
-                  project?.comments?.map((comment) => (
-                    <div key={comment._id} className={`flex gap-4 ps-4 py-2 border-b-2 mb-1 border-s-2 ${comment.admin ? 'border-s-black' : 'border-s-gray-400'}`}>
-                      <div className="w-12 h-12 bg-gray-200 rounded-full">
-                        {user.user?.picture ? (
-                          <Image src={user.user?.picture} alt="avatar" className="w-full h-full rounded-full" width={64} height={64} />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <h1 className="text-2xl font-bold">{comment.author?.charAt(0)}</h1>
-                          </div>
-                        )
-                        }
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h2
-                            className={`font-bold  ${
-                              comment.admin ? "text-black" : "text-gray-600"
-                            }`}
-                          >
-                            {comment.author || "Undefined Author"}
-                          </h2>
-                          <span className="text-xs border-s-2 ps-2">
-                            {moment(comment.createdAt).format("MMM DD, YYYY hh:mm")}
-                          </span>
-                        </div>
-                        <p>{comment.content}</p>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p>No comments</p>
-                )}
-              </div>
-              <hr className="my-2" />
-              <form onSubmit={handleCommentSubmit}>
-                <div id="add-comment" className="flex flex-col">
-                  <textarea
-                    placeholder="Add a comment"
-                    name="content"
-                    id="content"
-                    className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
-                    required
-                    value={commentContent}
-                    onChange={(e) => setCommentContent(e.target.value)}
-                  ></textarea>
-                  <div>
-                    <Button variant="default" type="submit" className="mt-2">
-                      Add Comment
-                    </Button>
-                  </div>
-                </div>
-              </form>
+          <Card className="pt-6 max-h-96 overflow-y-scroll">
+            <CardContent>
+              <CommentsPanel
+                comments={project?.comments}
+                user={user}
+                onSubmit={handleCommentSubmit}
+              />
             </CardContent>
           </Card>
         </div>
