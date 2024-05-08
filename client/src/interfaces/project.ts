@@ -1,5 +1,6 @@
 import { Client } from "./client";
 import { Comment } from "./comment";
+import { Task } from "./task";
 
 export interface Project {
     _id?: string;
@@ -15,4 +16,5 @@ export interface Project {
     updatedAt?: Date;
     tasksCounter?: number;
     comments?: Comment[];
+    tasks?: Task[];
 }
