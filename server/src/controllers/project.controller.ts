@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Project from "../models/project.model";
 import Comment from "../models/comment.model";
+import Task from "../models/task.model";
 
 export const getProjects = async (req: Request, res: Response) => {
   try {
@@ -24,6 +25,7 @@ export const getProject = async (req: Request, res: Response) => {
       return;
     }
     const comments = await Comment.find({ projectId: id });
+
     res.json(formatProjectData(project, "full", comments));
   } catch (error) {
     errorHandling(error, res);
@@ -32,9 +34,9 @@ export const getProject = async (req: Request, res: Response) => {
 
 export const createProject = async (req: Request, res: Response) => {
   try {
-    const { userId, clientId, name, description, image, startDate, endDate, status } = req.body;
+    const { userId, client, name, description, image, startDate, endDate, status } = req.body;
 
-    const project = new Project({ userId, clientId, name, description, image, startDate, endDate, status });
+    const project = new Project({ userId, client, name, description, image, startDate, endDate, status });
 
     await project.save();
     res
