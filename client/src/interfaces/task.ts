@@ -3,10 +3,9 @@ export interface Task {
     title: string;
     description?: string;
     status: "in-progress" | "complete" | "in-backlog";
-    image?: string;
     startDate: string;
     endDate: string;
-    projectID: string;
+    projectId: string;
     createdAt?: string;
     updatedAt?: string;
 }
