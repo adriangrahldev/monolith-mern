@@ -3,7 +3,7 @@ import { Table, TableCaption, TableHeader, TableRow, TableHead, TableBody, Table
 export const TaskTable = ({tasks}:{tasks: any[]}) => {
   return (
     <Table>
-      <TableCaption>A list of your upcoming tasks.</TableCaption>
+      {/* <TableCaption>A list of your upcoming tasks.</TableCaption> */}
       <TableHeader>
         <TableRow>
           <TableHead className="w-[400px]">Description</TableHead>
