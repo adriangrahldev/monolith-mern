@@ -1,5 +1,6 @@
 import { getAccessToken, getSession } from "@auth0/nextjs-auth0/edge";
 import { NextRequest, NextResponse } from "next/server";
+import { log } from "util";
 const apiURL = process.env.API_SERVER_URL;
 
 export async function GET(req: NextRequest) {
@@ -9,10 +10,10 @@ export async function GET(req: NextRequest) {
   if (!user || !user.sub) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
-  if (req.url.includes("clientId")) {
-    const clientId = req.url.split("=")[1];
+  if (req.url.includes("taskId")) {
+    const projectId = req.url.split("=")[1];
     try {
-      const response = await fetch(`${apiURL}/api/clients/${clientId}`, {
+      const response = await fetch(`${apiURL}/api/tasks/${projectId}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
@@ -25,12 +26,13 @@ export async function GET(req: NextRequest) {
 
       return NextResponse.json(await response.json());
     } catch (error) {
-      console.error("Failed to fetch client:", error);
+      console.error("Failed to fetch task:", error);
       return NextResponse.json({ message: "Server error" }, { status: 500 });
     }
   } else {
     try {
-      const response = await fetch(`${apiURL}/api/clients?userId=${user.sub}`, {
+      const projectId = req.url.split("projectId=")[1];
+      const response = await fetch(`${apiURL}/api/tasks?userId=${user.sub}&projectId=${projectId}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
@@ -51,7 +53,7 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const { accessToken } = await getAccessToken();
-  const response = await fetch(`${apiURL}/api/clients/${req}`, {
+  const response = await fetch(`${apiURL}/api/tasks/${req}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -64,7 +66,7 @@ export async function POST(req: NextRequest) {
   const { accessToken } = await getAccessToken();
   const body = await req.json();
   console.log(body);
-  const response = await fetch(`${apiURL}/api/clients`, {
+  const response = await fetch(`${apiURL}/api/tasks`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -78,7 +80,7 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   const { accessToken } = await getAccessToken();
   const body = await req.json();
-  const response = await fetch(`${apiURL}/api/clients/${req}`, {
+  const response = await fetch(`${apiURL}/api/tasks/${req}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${accessToken}`,
