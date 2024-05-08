@@ -17,11 +17,10 @@ const CreateTaskModal = ({
     _id: "",
     title: "",
     description: "",
-    image: "",
     startDate: "",
     endDate: "",
     status: "in-backlog",
-    projectID: "",
+    projectId: "",
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,7 +32,7 @@ const CreateTaskModal = ({
   };
 
   const onChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData({
@@ -77,18 +76,7 @@ const CreateTaskModal = ({
               />
             </div>
 
-            <div className="flex flex-col">
-              <label className="text-gray-400 text-sm font-semibold mb-1">
-                Image
-              </label>
-              <input
-                type="text"
-                name="image"
-                value={formData.image}
-                onChange={onChange}
-                className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
-              />
-            </div>
+           
 
             <div className="grid grid-cols-2 gap-2">
               <div className="flex flex-col">
@@ -128,24 +116,12 @@ const CreateTaskModal = ({
                 className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
               >
                 <option value="">Select Status</option>
-                <option value="todo">To Do</option>
-                <option value="inProgress">In Progress</option>
+                <option value="in-backlog">Backlog</option>
+                <option value="in-progress">In Progress</option>
                 <option value="completed">Completed</option>
               </select>
             </div>
 
-            <div className="flex flex-col">
-              <label className="text-gray-400 text-sm font-semibold mb-1">
-                Project
-              </label>
-              <input
-                type="text"
-                name="project"
-                value={formData.projectID}
-                onChange={onChange}
-                className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
-              />
-            </div>
 
             <div className="w-full flex justify-between mt-2">
               <button
