@@ -17,7 +17,7 @@ const CreateProjectModal = ({
 }) => {
   const [formData, setFormData] = useState<Project>({
     userId: "",
-    clientId: "",
+    client: "",
     name: "",
     description: "",
     startDate: moment().format("YYYY-MM-DD"),
@@ -77,7 +77,7 @@ const CreateProjectModal = ({
             <select
               className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
               required
-              name="clientId"
+              name="client"
               value={(formData.client as string)}
               onChange={onChange}
             >
