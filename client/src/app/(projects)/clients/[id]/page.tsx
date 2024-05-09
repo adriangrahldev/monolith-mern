@@ -16,37 +16,73 @@ import {
 } from "@/components/ui/select"
 import { useBreadcrumb } from "@/contexts/BreadcrumbContext";
 import { useCallback, useEffect, useState } from "react";
+import { DeleteConfirmationModal } from "@/components/modals/DeleteConfirmationModal";
 
 
 
 
-const ProyectPage = () => {
+const ClientPage = () => {
+
     const router = useRouter();
     const params = useParams();
     const { id } = params;
+
+
     const { setItems, clearItems } = useBreadcrumb();
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+
     const [client, setClient] = useState({
         name: "",
         email: "",
         phone: "",
         avatar: "",
-        projects: [{ _id: "", title: "", counter: 0 }],
     });
+    const [projects, setProjects] = useState([
+        {
+            name: "",
+            tasksCounter: 0,
+            completedTasksCounter: 0,
+            _id: "",
+        },
+    ]);
 
     const fetchClient = useCallback(async () => {
         try {
             const res = await fetch(`/api/clients?clientId=${id}`);
             const data = await res.json();
+            console.log(data);
             if (res.status === 401) {
                 router.push('/api/auth/login');
             }
             if (res.status === 200) {
-                setClient(data);
+                setClient(data.client);
+                setProjects(data.projects);
             }
         } catch (error) {
             console.log(error);
         }
     }, [id, router]);
+
+    const handleDelete = async () => {
+        try {
+            const res = await fetch(`/api/clients?clientId=${id}`, {
+                method: 'DELETE',
+            });
+            const data = await res.json();
+            console.log(data);
+            if (res.status === 200) {
+                router.push('/clients');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const toggleDeleteModal = () => {
+        setShowDeleteModal(!showDeleteModal);
+    }
+
 
     useEffect(() => {
         fetchClient();
@@ -78,7 +114,7 @@ const ProyectPage = () => {
                     <FontAwesomeIcon icon={faPen} className="mr-2" />
                     Edit Client
                 </Button>
-                <Button variant={"ghost"}>
+                <Button variant={"ghost"} onClick={toggleDeleteModal}>
                     <FontAwesomeIcon icon={faTrash} className="mr-2" />
                     Delete Client
                 </Button>
@@ -134,25 +170,25 @@ const ProyectPage = () => {
                                 </Select>
                             </div>
                             <div className="grid grid-cols-1  md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                                {!client.projects ?
+                                {projects.length == 0 ?
                                     <div className="col-span-3 text-center">
                                         <FontAwesomeIcon icon={faBriefcase} size="5x" />
                                         <h2 className="text-2xl font-bold">No projects found</h2>
                                     </div>
                                     :
-                                    client.projects.map((project) => (
+                                    projects.map((project) => (
                                         <div
                                             key={project._id}
                                             className="hover:bg-gray-100"
                                         >
                                             <DefaultCard
-                                                title={project.title}
-                                                counter={project.counter}
+                                                title={project.name}
+                                                counter={project.tasksCounter}
                                                 counterText={"Tasks"}
                                                 link={`/projects/${project._id}`}
                                                 footer={
                                                     <Progress
-                                                        value={Math.floor(Math.random() * 100)}
+                                                        value={project.completedTasksCounter / project.tasksCounter * 100}
                                                         max={100}
                                                     > </Progress>
                                                 }
@@ -165,8 +201,15 @@ const ProyectPage = () => {
 
                 </Card>
             </div>
+            <DeleteConfirmationModal
+                show={showDeleteModal}
+                toggle={toggleDeleteModal}
+                onDelete={handleDelete}
+                name={client.name}
+                type="client"
+            />
         </div>
     );
 };
 
-export default ProyectPage;
+export default ClientPage;

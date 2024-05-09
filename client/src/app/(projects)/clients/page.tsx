@@ -63,7 +63,7 @@ const ClientsPage = () => {
     } catch (error) {
       console.log(error);
     }
-
+    fetchClients();
     toggleCreateModal();
   }
 
