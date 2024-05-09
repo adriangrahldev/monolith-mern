@@ -70,12 +70,14 @@ const ProjectPage = () => {
       if (res.status === 401) {
         router.push("/api/auth/login");
       }
+      fetchTasks();
+      toggleCreateTaskModal();
       fetchProject();
     } catch (error) {
       console.log(error);
     }
 
-    toggleCreateTaskModal();
+
   };
 
   const handleStatusFilterChange = (value: string) => {
@@ -134,6 +136,7 @@ const ProjectPage = () => {
       if (res.status === 200) {
         setProject(data);
       }
+      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -184,7 +187,8 @@ const ProjectPage = () => {
                   <div id="client">
                     <h2 className="text-lg font-bold">Client</h2>
                     <p className="pl-2">
-                      {(project.client as Client).name || ""}
+                      {project.client &&
+                        (project.client as Client).name || "Sin Cliente"}
                     </p>
                   </div>
                   <div id="description">
