@@ -1,14 +1,15 @@
 import { Request, Response } from "express";
 import Client from "../models/client.model";
+import Project from "../models/project.model";
 
 export const getClients = async (req: Request, res: Response) => {
   try {
     const userId = req.query.userId;
-    const clients = await Client.find({ userId });
-    const formattedClients = clients.map((client) =>
-      formatClientData(client, "simple")
+    const clients = await Client.find({ userId }).select(
+      "_id name projectsCounter avatar"
     );
-    res.json(formattedClients);
+
+    res.json(clients);
   } catch (error) {
     errorHandling(error, res);
   }
@@ -17,12 +18,22 @@ export const getClients = async (req: Request, res: Response) => {
 export const getClient = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const client = await Client.findById(id);
+    const client = await Client.findById(id).select(
+      "_id name email phone avatar projectsCounter"
+    );
+    const projects = await Project.find({ client: id }).select(
+      "_id name status description completedTasksCounter tasksCounter"
+    );
+    console.log(projects);
     if (!client) {
       res.status(404).json({ message: "Client not found" });
       return;
     }
-    res.json(formatClientData(client));
+    const clientData = {
+      client,
+      projects,
+    };
+    res.json(clientData);
   } catch (error) {
     errorHandling(error, res);
   }
@@ -33,9 +44,7 @@ export const createClient = async (req: Request, res: Response) => {
     const { name, email, phone, userId } = req.body;
     const client = new Client({ name, email, phone, userId });
     await client.save();
-    res
-      .status(201)
-      .json({ message: "Client created", data: formatClientData(client) });
+    res.status(201).json({ message: "Client created", data: client });
   } catch (error) {
     errorHandling(error, res);
   }
@@ -54,7 +63,7 @@ export const updateClient = async (req: Request, res: Response) => {
       res.status(404).json({ message: "Client not found" });
       return;
     }
-    res.json({ message: "Client updated", data: formatClientData(client) });
+    res.json({ message: "Client updated", data: client });
   } catch (error) {
     errorHandling(error, res);
   }
@@ -63,7 +72,7 @@ export const updateClient = async (req: Request, res: Response) => {
 export const deleteClient = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const client = await Client.findByIdAndDelete(id);
+    const client = await Client.findByIdAndUpdate(id, { isDeleted: true });
     if (!client) {
       res.status(404).json({ message: "Client not found" });
       return;
@@ -82,22 +91,3 @@ const errorHandling = (error: any, res: Response) => {
   }
   res.status(500).json({ message: "Internal Server Error" });
 };
-
-function formatClientData(client: any, type: string = "full") {
-  if (type === "full")
-    return {
-      _id: client._id,
-      name: client.name,
-      email: client.email,
-      phone: client.phone,
-      avatar: client.avatar,
-      projectsCounter: client.projectsCounter,
-    };
-  if (type === "simple")
-    return {
-      _id: client._id,
-      name: client.name,
-      projectsCounter: client.projectsCounter,
-      avatar: client.avatar,
-    };
-}
