@@ -51,13 +51,16 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const { accessToken } = await getAccessToken();
-  const response = await fetch(`${apiURL}/api/clients/${req}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-  return NextResponse.json(await response.json());
+  if (req.url.includes("clientId")) {
+    const clientId = req.url.split("=")[1];
+    const response = await fetch(`${apiURL}/api/clients/${clientId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return NextResponse.json(await response.json());
+  }
 }
 
 export async function POST(req: NextRequest) {
