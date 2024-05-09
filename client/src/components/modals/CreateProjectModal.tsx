@@ -42,10 +42,8 @@ const CreateProjectModal = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (onSubmit) onSubmit(formData);
-      
   };
 
-  
   const onChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -66,7 +64,7 @@ const CreateProjectModal = ({
   }, []);
 
   return show ? (
-    <div className="fixed w-screen h-screen top-0 left-0 flex items-center justify-center">
+    <div className="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-10">
       <div className="fixed w-screen h-screen bg-black opacity-50"></div>
       <Card className="z-50 w-2/6 shadow-xl animate-zoom">
         <CardHeader>
@@ -81,7 +79,7 @@ const CreateProjectModal = ({
               value={(formData.client as string)}
               onChange={onChange}
             >
-              <option value="" disabled selected>
+              <option value="" disabled>
                 Select Client
               </option>
               {clients.map((client) => (
