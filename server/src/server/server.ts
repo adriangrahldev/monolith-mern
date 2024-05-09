@@ -1,6 +1,5 @@
 import express, { urlencoded } from "express";
 import cors from "cors";
-import userRoutes from "../routes/user.routes";
 import clientRoutes from "../routes/client.routes";
 import projectRoutes from "../routes/project.routes";
 import commentRoutes from "../routes/comment.routes";
@@ -26,14 +25,11 @@ app.use(
   })
 );
 
-
 // Rutas
-app.use("/api/user", userRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/tasks", taskRoutes);
-
 
 app.use(errorHandler);
 
