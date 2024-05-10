@@ -1,6 +1,6 @@
 'use client'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBorderAll, faProjectDiagram, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faBorderAll, faProjectDiagram, faSignOutAlt, faUsers } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,6 +8,7 @@ import { useBreadcrumb } from '@/contexts/BreadcrumbContext';
 import { useEffect } from "react";
 import UserBadge from "../user/UserBadge";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 
 export const SideBar = ({ routes }: { routes: any[] }) => {
   const { user, error, isLoading } = useUser();
@@ -36,9 +37,9 @@ export const SideBar = ({ routes }: { routes: any[] }) => {
         </ul>
       </nav>
       <div className="absolute bottom-0 w-full h-28 flex flex-col  justify-center items-center">
-        <UserBadge user={user} variant="minimalist" className="hidden max-lg:flex" />
-        <Link href={'/api/auth/logout'} >
-          Sign Out
+        <Link href={'/api/auth/logout'} className="flex flex-col justify-center items-center" >
+          <FontAwesomeIcon icon={faSignOutAlt} className="mb-2 h-4 w-4" />
+          <span className="text-xs">Sign Out</span>
         </Link>
       </div>
     </aside>
