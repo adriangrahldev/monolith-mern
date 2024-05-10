@@ -21,6 +21,7 @@ import CreateProjectModal from "@/components/modals/CreateProjectModal";
 import CreateClientModal from "@/components/modals/CreateClientModal";
 import { Client } from "@/interfaces/client";
 import { toast } from "sonner";
+import { ClientSkeleton } from "@/components/skeletons/ClientSkeleton";
 
 
 
@@ -35,6 +36,7 @@ const ClientPage = () => {
     const { setItems, clearItems } = useBreadcrumb();
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [loading, setLoading] = useState(false);
 
 
     const [client, setClient] = useState<Client>({
@@ -56,6 +58,7 @@ const ClientPage = () => {
 
     const fetchClient = useCallback(async () => {
         try {
+            setLoading(true);
             const res = await fetch(`/api/clients?clientId=${id}`);
             const data = await res.json();
             console.log(data);
@@ -65,6 +68,7 @@ const ClientPage = () => {
             if (res.status === 200) {
                 setClient(data.client);
                 setProjects(data.projects);
+                setLoading(false);
             }
         } catch (error) {
             console.log(error);
@@ -161,6 +165,8 @@ const ClientPage = () => {
         ]);
     }, [id, clearItems, setItems, client.name, fetchClient]);
 
+
+
     return (
         <>
             <div className="h-screen space-y-4">
@@ -183,87 +189,87 @@ const ClientPage = () => {
 
                 </div>
                 <hr />
-                <h1 className="text-3xl font-bold mt-4">Project summary</h1>
-                <div id="client-container">
-                    <Card>
-                        <CardContent className="p-4 grid grid-cols-1 sm:grid-cols-1 md:flex md:flex-row gap-4">
-                            <div className="space-y-2 md:w-[35%]">
-                                <h2 className="text-2xl font-bold">
-                                    {client.name}
-                                </h2>
-                                <div className="flex align-middle justify-center">
-                                    {
-                                        client.avatar ?
-                                            <div className="w-20 h-20 bg-gray-300 rounded-full">
-                                                <Image
-                                                    src={client.avatar}
-                                                    alt={client.name}
-                                                    layout="fill"
-                                                    objectFit="cover"
-                                                    className="rounded-full"
-                                                />
+                <h1 className="text-3xl font-bold mt-4">Client Summary</h1>
+                {loading ? <ClientSkeleton /> :
+                    <div id="client-container">
+                        <Card>
+                            <CardContent className="p-4 grid grid-cols-1 sm:grid-cols-1 md:flex md:flex-row gap-4">
+                                <div className="space-y-2 md:w-[35%]">
+                                    <h2 className="text-2xl font-bold">
+                                        {client.name}
+                                    </h2>
+                                    <div className="flex align-middle justify-center">
+                                        {
+                                            client.avatar ?
+                                                <div className="w-20 h-20 bg-gray-300 rounded-full">
+                                                    <Image
+                                                        src={client.avatar}
+                                                        alt={client.name}
+                                                        layout="fill"
+                                                        objectFit="cover"
+                                                        className="rounded-full"
+                                                    />
+                                                </div>
+                                                : <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center">
+                                                    <FontAwesomeIcon icon={faUserCircle} size="3x" />
+                                                </div>
+                                        }
+                                    </div>
+                                    <div id="email">
+                                        <h2 className="text-lg font-bold">Email:</h2>
+                                        <p className="pl-5">{client.email}</p>
+                                    </div>
+                                    <div id="phone">
+                                        <h2 className="text-lg font-bold">Phone:</h2>
+                                        <p className="pl-5">{client.phone}</p>
+                                    </div>
+                                </div>
+                                <div id="projects" className="flex-1">
+                                    <div className="flex justify-between items-center">
+                                        <h2 className="text-2xl font-bold my-4 ">Projects</h2>
+                                        <Select>
+                                            <SelectTrigger className="w-[180px]">
+                                                <SelectValue placeholder="Status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="progress">In Progres</SelectItem>
+                                                <SelectItem value="complete">Complete</SelectItem>
+                                                <SelectItem value="confirm">To Confirm</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="grid grid-cols-1  md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                                        {projects.length == 0 ?
+                                            <div className="col-span-3 text-center">
+                                                <FontAwesomeIcon icon={faBriefcase} size="5x" />
+                                                <h2 className="text-2xl font-bold">No projects found</h2>
                                             </div>
-                                            : <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center">
-                                                <FontAwesomeIcon icon={faUserCircle} size="3x" />
-                                            </div>
-                                    }
+                                            :
+                                            projects.map((project) => (
+                                                <div
+                                                    key={project._id}
+                                                    className="hover:bg-gray-100"
+                                                >
+                                                    <DefaultCard
+                                                        title={project.name}
+                                                        counter={project.tasksCounter}
+                                                        counterText={"Tasks"}
+                                                        link={`/projects/${project._id}`}
+                                                        footer={
+                                                            <Progress
+                                                                value={project.completedTasksCounter / project.tasksCounter * 100}
+                                                                max={100}
+                                                            > </Progress>
+                                                        }
+                                                    />
+                                                </div>
+                                            ))}
+                                    </div>
                                 </div>
-                                <div id="email">
-                                    <h2 className="text-lg font-bold">Email:</h2>
-                                    <p className="pl-5">{client.email}</p>
-                                </div>
-                                <div id="phone">
-                                    <h2 className="text-lg font-bold">Phone:</h2>
-                                    <p className="pl-5">{client.phone}</p>
-                                </div>
-                            </div>
-                            <div id="projects" className="flex-1">
-                                <div className="flex justify-between items-center">
-                                    <h2 className="text-2xl font-bold my-4 ">Projects</h2>
-                                    <Select>
-                                        <SelectTrigger className="w-[180px]">
-                                            <SelectValue placeholder="Status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="progress">In Progres</SelectItem>
-                                            <SelectItem value="complete">Complete</SelectItem>
-                                            <SelectItem value="confirm">To Confirm</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="grid grid-cols-1  md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                                    {projects.length == 0 ?
-                                        <div className="col-span-3 text-center">
-                                            <FontAwesomeIcon icon={faBriefcase} size="5x" />
-                                            <h2 className="text-2xl font-bold">No projects found</h2>
-                                        </div>
-                                        :
-                                        projects.map((project) => (
-                                            <div
-                                                key={project._id}
-                                                className="hover:bg-gray-100"
-                                            >
-                                                <DefaultCard
-                                                    title={project.name}
-                                                    counter={project.tasksCounter}
-                                                    counterText={"Tasks"}
-                                                    link={`/projects/${project._id}`}
-                                                    footer={
-                                                        <Progress
-                                                            value={project.completedTasksCounter / project.tasksCounter * 100}
-                                                            max={100}
-                                                        > </Progress>
-                                                    }
-                                                />
-                                            </div>
-                                        ))}
-                                </div>
-                            </div>
-                        </CardContent>
+                            </CardContent>
 
-                    </Card>
-                </div>
-
+                        </Card>
+                    </div>}
             </div>
 
 
