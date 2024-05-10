@@ -52,7 +52,9 @@ export const createClient = async (req: Request, res: Response) => {
 
 export const updateClient = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id;
+    const id = req.body._id;
+    console.log(id);
+    console.log(req.body);
     const { name, email, phone } = req.body;
     const client = await Client.findByIdAndUpdate(id, {
       name,
@@ -86,7 +88,7 @@ export const deleteClient = async (req: Request, res: Response) => {
 const errorHandling = (error: any, res: Response) => {
   console.error("An error occurred:", error);
   if (error.code === 11000) {
-    res.status(400).json({ message: "Email already registered" });
+    res.status(409).json({ message: "Email already registered" });
     return;
   }
   res.status(500).json({ message: "Internal Server Error" });
