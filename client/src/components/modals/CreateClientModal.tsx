@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faSave } from "@fortawesome/free-solid-svg-icons";
 import { Client } from "@/interfaces/client";
 
 const CreateClientModal = ({
   show,
   toggle,
   onSubmit,
+  initialData,
 }: {
   show: boolean;
   toggle: () => void;
   onSubmit?: (formData: Client) => void;
+  initialData?: Client;
 }) => {
   const [formData, setFormData] = useState<Client>({
     _id: "",
@@ -22,9 +24,14 @@ const CreateClientModal = ({
     projectsCounter: 0,
   });
 
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
     if (onSubmit) {
       onSubmit(formData);
     }
@@ -101,8 +108,8 @@ const CreateClientModal = ({
                 type="submit"
                 className=" bg-black text-white rounded-md p-2 px-4 focus:outline-none focus:ring-2 hover:scale-95"
               >
-                <FontAwesomeIcon icon={faSave} className="mr-2" />
-                Create Client
+                <FontAwesomeIcon icon={initialData ? faEdit : faSave} className="mr-2" />
+                {initialData ? "Update" : "Create Client"}
               </button>
             </div>
           </form>
