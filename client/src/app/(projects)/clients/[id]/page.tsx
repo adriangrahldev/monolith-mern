@@ -122,7 +122,10 @@ const ClientPage = () => {
                 const data = await res.json();
                 if (res.status === 200) {
                     return data;
-                } else {
+                } else if (res.status === 409) {
+                    throw new Error('Client email already exists');
+                }
+                else {
                     throw new Error('Failed to update');
                 }
             } catch (error) {
