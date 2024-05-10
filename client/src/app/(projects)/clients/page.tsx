@@ -9,24 +9,29 @@ import { useRouter } from "next/navigation";
 import CreateClientModal from "@/components/modals/CreateClientModal";
 import { Client } from "@/interfaces/client";
 import { useUser } from "@auth0/nextjs-auth0/client";
-
+import { toast } from "sonner";
+import { SkeletonCard } from "@/components/skeletons/SkeletonCard";
 
 const ClientsPage = () => {
   const router = useRouter();
   const { user } = useUser();
   const { setItems, clearItems } = useBreadcrumb();
+  const [loading, setLoading] = useState(false);
 
   const [clients, setClients] = useState<Client[]>([]);
   const fetchClients = useCallback(async () => {
     try {
+      setLoading(true);
       const res = await fetch(`/api/clients?userId=${user?.sub}`);
       const data = await res.json();
       if (res.status === 401) {
         router.push('/api/auth/login');
       }
       if (res.status === 200) {
+        setLoading(false);
         setClients(data);
       }
+
     } catch (error) {
       console.log(error);
     }
@@ -44,28 +49,42 @@ const ClientsPage = () => {
 
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const handleRegisterSubmit = async (formData: Client) => {
-    console.log(formData);
-    console.log(user);
+  const handleRegisterSubmit = (formData: Client) => {
+    const registerPromise = async () => {
+      try {
+        formData.userId = user?.sub as string;
+        const res = await fetch('/api/clients', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+        const data = await res.json();
+        if (res.status === 200 || res.status === 201) {
+          return data;
+        } else {
+          throw new Error('Failed to register');
+        }
+      } catch (error) {
+        throw error;
+      }
+    };
 
-    formData.userId = user?.sub as string;
-
-    try {
-      const res = await fetch('/api/clients', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
+    toast.promise(
+      registerPromise(),
+      {
+        loading: 'Registering client...',
+        success: (data) => {
+          fetchClients();
+          toggleCreateModal();
+          return `Client registered successfully!`;
         },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-    fetchClients();
-    toggleCreateModal();
+        error: (err) => `Registration failed: ${err.message}`,
+      }
+    );
   }
+
 
   const toggleCreateModal = () => {
     setShowCreateModal(!showCreateModal);
@@ -81,9 +100,13 @@ const ClientsPage = () => {
       </div>
       <hr />
       <div id='projects-container' className='grid xl:grid-cols-4 grid-rows-3 gap-4 rounded-md lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 '>
-        {clients.map((client, index) => (
-          <DefaultCard key={index} title={client.name} counter={client.projectsCounter} counterText={'Projects'} avatar={client.avatar} link={`/clients/${client._id}`} />
-        ))}
+
+        {loading ?
+          Array.from({ length: 4 }).map((_, index) => <SkeletonCard key={index} />)
+          :
+          clients.map((client, index) => (
+            <DefaultCard key={index} title={client.name} counter={client.projectsCounter} counterText={'Projects'} avatar={client.avatar} link={`/clients/${client._id}`} />
+          ))}
       </div>
       <CreateClientModal show={showCreateModal} toggle={toggleCreateModal} onSubmit={handleRegisterSubmit} />
 
