@@ -14,7 +14,8 @@ import { Fragment, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
-  faHome
+  faHome,
+  faSignOutAlt
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { Button } from "./button";
@@ -27,11 +28,6 @@ const TopBar = () => {
   const { user, error, isLoading } = useUser();
   const { breadcrumb, addItem, removeItem } = useBreadcrumb();
   const [showMobileBreadcrumb, setShowMobileBreadcrumb] = useState(false);
-  const showMenu = () => {
-    //mostrar boton de cerrar sesion
-    console.log('show menu')
-  }
-
 
 
 
@@ -99,11 +95,30 @@ const TopBar = () => {
           variant="default"
           user={user}
         />
-        <div onClick={showMenu} className="max-md:flex hidden cursor-pointer">
-          <UserBadge
-            variant="minimalist"
-            user={user}
-          />
+        <UserBadge
+          className='hidden md:flex lg:hidden'
+          variant="minimalist"
+          user={user}
+        />
+        <div className="max-md:flex hidden cursor-pointer">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex">
+                <UserBadge
+                  variant="minimalist"
+                  user={user}
+                />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuItem asChild>
+                <Link href={'/api/auth/logout'} >
+                  <FontAwesomeIcon icon={faSignOutAlt} className="mr-2 h-4 w-4" />
+                  Sign Out
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </div>
