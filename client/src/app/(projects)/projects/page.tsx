@@ -10,6 +10,7 @@ import { Project } from "@/interfaces/project";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from "next/navigation";
 import moment from "moment";
+import { Progress } from "@radix-ui/react-progress";
 
 const ProjectsPage = () => {
   const router = useRouter();
@@ -92,7 +93,7 @@ const ProjectsPage = () => {
         id="projects-container"
         className="grid xl:grid-cols-4 grid-rows-3 gap-4 rounded-md lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 "
       >
-        {projects.map((project, index) => (
+        {projects.map((project: Project, index) => (
           <DefaultCard
             key={index}
             title={project.name}
@@ -101,6 +102,12 @@ const ProjectsPage = () => {
             counter={project.tasksCounter || 0}
             counterText={"Tasks"}
             link={`/projects/${project._id}`}
+            footer={
+              <Progress
+                  value={(project.completedTasksCounter! / project.tasksCounter! * 100)||0}
+                  max={100}
+              > </Progress>
+            }
           />
         ))}
       </div>
