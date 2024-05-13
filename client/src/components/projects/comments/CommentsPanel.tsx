@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { Comment } from "@/interfaces/comment";
 import moment from "moment";
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClose } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 interface CommentsPanelProps {
     comments: Comment[] | undefined;
@@ -21,10 +21,25 @@ const CommentsPanel: React.FC<CommentsPanelProps> = ({
     onSubmit,
     toggleCommentsPanel,
 }) => {
+
+    const handleLocalOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const content = e.currentTarget.content.value;
+        onSubmit(content);
+        e.currentTarget.reset();
+    }
+
+    useEffect(() => {
+        document.getElementById("comments-container")?.scrollTo(
+            0,
+            document.getElementById("comments-container")?.scrollHeight || 0
+        )
+    }, [comments]);
+
     return (
-        <div className="fixed h-screen w-1/3 max-lg:w-screen right-0 top-0 overflow-y-auto rounded-none bg-white shadow-2xl z-50">
+        <div id="comments-container" className="fixed h-screen w-1/3 max-lg:w-screen right-0 top-0 overflow-y-auto rounded-none bg-white shadow-2xl z-50">
             <div className="h-full w-full relative">
-                <div className="fixed w-1/3 max-lg:w-screen h-16 p-3 flex justify-between items-center border-2 bg-white">
+                <div className="fixed w-1/3 max-lg:w-screen h-16 p-3 flex justify-between items-center border-b-2 bg-white">
                     <h1 className="text-xl font-bold">Comments</h1>
                     <Button onClick={toggleCommentsPanel} size={"sm"} variant={"outline"}>
                         <FontAwesomeIcon icon={faClose} />
@@ -73,15 +88,10 @@ const CommentsPanel: React.FC<CommentsPanelProps> = ({
                         <p>No comments yet.</p>
                     )}
                 </div>
-                <div className="fixed bottom-0 right-0 w-1/3 max-lg:w-screen bg-white border-2 h-fit p-4">
+                <div className="fixed bottom-0 right-0 w-1/3 max-lg:w-screen bg-white border-t-2 h-fit p-4">
                     <form
-                    className="flex items-center h-fit"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            const content = e.currentTarget.content.value;
-                            onSubmit(content);
-                            e.currentTarget.reset();
-                        }}
+                    className="flex items-center h-fit gap-2"
+                        onSubmit={(e) => handleLocalOnSubmit(e)}
                     >
                         <Input
                             type="text"
@@ -90,7 +100,7 @@ const CommentsPanel: React.FC<CommentsPanelProps> = ({
                             required
                         />
                         <Button variant="default" type="submit">
-                            Comment
+                            <FontAwesomeIcon icon={faPaperPlane}  />
                         </Button>
                     </form>
                 </div>
