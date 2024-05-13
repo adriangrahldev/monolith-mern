@@ -1,6 +1,6 @@
 "use client";
 // Importaciones de librerías y componentes externos
-import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import { faCommentDots, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter, useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -33,6 +33,7 @@ const ProjectPage = () => {
   // Hooks de estado
   const [project, setProject] = useState<Project | undefined>();
   const [commentContent, setCommentContent] = useState("");
+  const [showCommentsPanel, setShowCommentsPanel] = useState(false);
   const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -52,13 +53,17 @@ const ProjectPage = () => {
     setShowCreateTaskModal(!showCreateTaskModal);
   };
 
+  const toggleCommentsPanel = () => {
+    setShowCommentsPanel(!showCommentsPanel);
+  }
+
   const handleCreateTaskSubmit = async (formData: Task) => {
     const data = {
       ...formData,
       projectId: id,
       userId: user?.sub as string,
     };
-
+      
     try {
       const res = await fetch(`/api/tasks`, {
         method: "POST",
@@ -76,8 +81,6 @@ const ProjectPage = () => {
     } catch (error) {
       console.log(error);
     }
-
-
   };
 
   const handleStatusFilterChange = (value: string) => {
@@ -171,10 +174,18 @@ const ProjectPage = () => {
           id="toolbar"
           className="w-full flex gap-2 items-center bg-gray-200 rounded-md px-2 h-12"
         >
-          <Button variant={"ghost"} onClick={toggleCreateTaskModal}>
-            <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
-            Add Task
-          </Button>
+          <div className="flex-1 flex justify-start">
+            <Button variant={"ghost"} onClick={toggleCreateTaskModal}>
+              <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
+              Add Task
+            </Button>
+          </div>
+          <div className="flex-1 flex justify-end">
+            <Button variant={"ghost"} onClick={toggleCommentsPanel}>
+              <FontAwesomeIcon icon={faCommentDots} className="mr-2" />
+              Comments
+            </Button>
+          </div>
         </div>
         <hr />
         <h1 className="text-3xl font-bold mt-4">Project summary</h1>
@@ -187,8 +198,8 @@ const ProjectPage = () => {
                   <div id="client">
                     <h2 className="text-lg font-bold">Client</h2>
                     <p className="pl-2">
-                      {project.client &&
-                        (project.client as Client).name || "Sin Cliente"}
+                      {(project.client && (project.client as Client).name) ||
+                        "Sin Cliente"}
                     </p>
                   </div>
                   <div id="description">
@@ -225,19 +236,19 @@ const ProjectPage = () => {
             </Card>
           )}
         </div>
-        <h1 className="text-3xl font-bold mt-4">Comments</h1>
-        <div id="comments-container">
-          <Card className="pt-6 max-h-96 overflow-y-scroll">
-            <CardContent>
-              <CommentsPanel
-                comments={project?.comments}
-                user={user}
-                onSubmit={handleCommentSubmit}
-              />
-            </CardContent>
-          </Card>
-        </div>
       </div>
+
+      {
+        showCommentsPanel && (
+          <CommentsPanel
+            comments={project?.comments}
+            user={user}
+            onSubmit={handleCommentSubmit}
+            toggleCommentsPanel={toggleCommentsPanel}
+          />
+        )
+      }
+
       <CreateTaskModal
         show={showCreateTaskModal}
         toggle={toggleCreateTaskModal}

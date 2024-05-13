@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import Project from "../models/project.model";
 import Comment from "../models/comment.model";
-import Task from "../models/task.model";
 
 export const getProjects = async (req: Request, res: Response) => {
   try {
@@ -28,8 +27,8 @@ export const getProject = async (req: Request, res: Response) => {
       return;
     }
     const comments = await Comment.find({ projectId: id });
-
-    res.json(project);
+    const projectObject = { ...project, comments };
+    res.json(projectObject);
   } catch (error) {
     errorHandling(error, res);
   }
