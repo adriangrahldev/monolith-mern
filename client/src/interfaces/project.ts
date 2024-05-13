@@ -17,4 +17,5 @@ export interface Project {
     tasksCounter?: number;
     comments?: Comment[];
     tasks?: Task[];
+    completedTasksCounter?: number;
 }
