@@ -81,16 +81,17 @@ export async function POST(req: NextRequest) {
   if (!accessToken) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
-
-  const body = await req.json();
+  console.log(req);
+  console.log(req.formData);
+  console.log(accessToken);
+  const body = await req.formData();
   try {
     const response = await fetch(`${apiURL}/api/clients`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: body,
     });
     return await handleApiResponse(response);
   } catch (error) {
