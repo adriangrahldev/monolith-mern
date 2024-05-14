@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faSave } from "@fortawesome/free-solid-svg-icons";
 import { Client } from "@/interfaces/client";
 import Image from "next/image";
+import { ValidImagesTypes } from "@/interfaces/ValidImagesTypes";
+import { toast } from "sonner";
 
 const CreateClientModal = ({
   show,
@@ -38,6 +40,7 @@ const CreateClientModal = ({
   useEffect(() => {
     if (image) {
       const reader = new FileReader();
+
       reader.onloadend = () => {
         setPreview(reader.result as string);
       };
@@ -56,6 +59,7 @@ const CreateClientModal = ({
       formDataForm.append("email", formData.email ? formData.email : "");
       formDataForm.append("phone", formData.phone ? formData.phone : "");
       if (image) {
+
         formDataForm.append("image", image);
       }
       console.log(formDataForm);
@@ -76,7 +80,14 @@ const CreateClientModal = ({
   const onImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
-      setImage(file);
+      const validImageTypes = Object.values(ValidImagesTypes);
+      if (validImageTypes.includes(file.type as ValidImagesTypes)) {
+        setImage(file);
+      } else {
+        toast.error("Invalid image type");
+        setImage(null);
+        e.target.value = "";
+      }
     }
   };
 
@@ -136,6 +147,7 @@ const CreateClientModal = ({
               </label>
               <input
                 type="file"
+                accept="image/*"
                 onChange={onImageChange}
                 className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
               />
