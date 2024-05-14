@@ -8,11 +8,17 @@ import {
   deleteClient,
 } from "../controllers/client.controller";
 import { jwtCheck } from "../middleware/authMiddleware";
+import { upload } from "../config/multer";
 
 const router = Router();
 
 router.get("/", jwtCheck, getClients);
-router.post("/", jwtCheck, createClient);
+router.post(
+  "/",
+  jwtCheck,
+  upload.fields([{ name: "image", maxCount: 1 }]),
+  createClient
+);
 router.get("/:id", jwtCheck, getClient);
 router.put("/:id", jwtCheck, updateClient);
 router.delete("/:id", jwtCheck, deleteClient);
