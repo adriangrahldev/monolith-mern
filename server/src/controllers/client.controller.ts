@@ -49,7 +49,7 @@ export const createClient = async (req: Request, res: Response) => {
     const images = files?.["image"] as Express.Multer.File[] | undefined;
     let client: IClient;
     if (images && images.length > 0) {
-      const { ref, downloadUrl } = await uploadFile(images[0]);
+      const { ref, downloadUrl } = await uploadFile(images[0], name);
       client = new Client({
         name,
         email,
