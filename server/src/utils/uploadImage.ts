@@ -2,7 +2,7 @@ import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { storage } from "../config/firebase.config";
 import sharp from "sharp";
 
-export const uploadFile = async (file: Express.Multer.File) => {
+export const uploadFile = async (file: Express.Multer.File, name: string) => {
   try {
     if (!file.buffer) {
       throw new Error("File buffer is missing");
@@ -27,7 +27,7 @@ export const uploadFile = async (file: Express.Multer.File) => {
       .webp({ quality: 80 })
       .toBuffer();
 
-    const fileRef = ref(storage, `file/${file.originalname} ${Date.now()}`);
+    const fileRef = ref(storage, `file/${name}-${Date.now()}`);
     const fileMetadata = {
       contentType: file.mimetype,
     };
