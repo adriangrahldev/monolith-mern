@@ -26,7 +26,6 @@ export const getClient = async (req: Request, res: Response) => {
     const projects = await Project.find({ client: id }).select(
       "_id name status description completedTasksCounter tasksCounter"
     );
-    console.log(projects);
     if (!client) {
       res.status(404).json({ message: "Client not found" });
       return;
@@ -71,8 +70,6 @@ export const createClient = async (req: Request, res: Response) => {
 export const updateClient = async (req: Request, res: Response) => {
   try {
     const id = req.body._id;
-    console.log(id);
-    console.log(req.body);
     const { name, email, phone } = req.body;
     const client = await Client.findByIdAndUpdate(id, {
       name,
