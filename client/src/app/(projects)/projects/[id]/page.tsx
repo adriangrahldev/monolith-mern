@@ -28,6 +28,8 @@ import { Client } from "@/interfaces/client";
 // Importaciones de componentes de terceros
 import ProjectTaskTable from "@/components/tasks/ProjectTaskTable";
 import CommentsPanel from "@/components/projects/comments/CommentsPanel";
+import { createTask } from '../../../../../../server/src/controllers/task.controller';
+
 
 // Componente principal
 const ProjectPage = () => {
@@ -59,30 +61,46 @@ const ProjectPage = () => {
   }
 
   const handleCreateTaskSubmit = async (formData: Task) => {
-    const data = {
-      ...formData,
-      projectId: id,
-      userId: user?.sub as string,
-    };
-      
-    try {
-      const res = await fetch(`/api/tasks`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      if (res.status === 401) {
-        router.push("/api/auth/login");
+    const createTaskPromise = async () => {
+
+      const data = {
+        ...formData,
+        projectId: id,
+        userId: user?.sub as string,
+      };
+        
+      try {
+        const res = await fetch(`/api/tasks`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        if (res.status === 401) {
+          router.push("/api/auth/login");
+        }
+        fetchTasks();
+        toggleCreateTaskModal();
+        fetchProject();
+      } catch (error) {
+        console.log(error);
+        throw error;
       }
-      fetchTasks();
-      toggleCreateTaskModal();
-      fetchProject();
-    } catch (error) {
-      console.log(error);
-    }
   };
+
+  toast.promise(
+    createTaskPromise(),
+    {
+      loading: 'Registering task...',
+      success: (data) => {
+        fetchTasks();
+        return `Task created successfully!`;
+      },
+      error: (err) => `Task creation has failed: ${err.message}`,
+    }
+  );
+  }
 
   const handleStatusFilterChange = (value: string) => {
     setStatusFilter(value);
@@ -116,26 +134,40 @@ const ProjectPage = () => {
   };
 
   const handleTaskUpdate = async (task: Task, status: string) => {
-    const data = {
-      ...task,
-      status: status,
+    const updateTaskPromise = async () => {
+
+      const data = {
+        ...task,
+        status: status,
+      };
+
+      try {
+        const res = await fetch(`/api/tasks?taskId=${task._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        if (res.status === 401) {
+          router.push("/api/auth/login");
+        }
+      } catch (error) {
+        throw error;
+      }
     };
 
-    try {
-      const res = await fetch(`/api/tasks?taskId=${task._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+    toast.promise(
+      updateTaskPromise(),
+      {
+        loading: 'Updating task...',
+        success: (data) => {
+          fetchTasks();
+          return `Task updated successfully!`;
         },
-        body: JSON.stringify(data),
-      });
-      if (res.status === 401) {
-        router.push("/api/auth/login");
+        error: (err) => `Update failed: ${err.message}`,
       }
-      fetchTasks();
-    } catch (error) {
-      console.log(error);
-    }
+    );
   }
 
   const fetchTasks = useCallback(async () => {
