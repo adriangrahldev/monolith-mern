@@ -28,7 +28,6 @@ import { Client } from "@/interfaces/client";
 // Importaciones de componentes de terceros
 import ProjectTaskTable from "@/components/tasks/ProjectTaskTable";
 import CommentsPanel from "@/components/projects/comments/CommentsPanel";
-import { createTask } from '../../../../../../server/src/controllers/task.controller';
 import TableSkeleton from "@/components/skeletons/TableSkeleton";
 
 
