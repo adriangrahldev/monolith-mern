@@ -109,7 +109,7 @@ const ClientPage = () => {
     }
 
 
-    const handleEdit = (formData: Client) => {
+    const handleEdit = (formData: FormData) => {
         const editPromise = async () => {
             try {
                 const res = await fetch(`/api/clients?clientId=${id}`, {
@@ -204,13 +204,14 @@ const ClientPage = () => {
                                     <div className="flex align-middle justify-center">
                                         {
                                             client.avatar ?
-                                                <div className="w-20 h-20 bg-gray-300 rounded-full">
+                                                <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center relative overflow-hidden">
                                                     <Image
                                                         src={client.avatar}
                                                         alt={client.name}
-                                                        layout="fill"
-                                                        objectFit="cover"
-                                                        className="rounded-full"
+                                                        fill
+                                                        priority
+                                                        className="rounded-full object-cover"
+                                                        sizes="(max-width: 768px) 200px, 200px"
                                                     />
                                                 </div>
                                                 : <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center">

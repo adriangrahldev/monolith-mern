@@ -49,16 +49,13 @@ const ClientsPage = () => {
 
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const handleRegisterSubmit = (formData: Client) => {
+  const handleRegisterSubmit = (formData: FormData) => {
     const registerPromise = async () => {
       try {
-        formData.userId = user?.sub as string;
+        formData.append('userId', user?.sub as string);
         const res = await fetch('/api/clients', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
+          body: formData,
         });
         const data = await res.json();
         if (res.status === 200 || res.status === 201) {

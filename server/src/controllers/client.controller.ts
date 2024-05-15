@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
-import Client from "../models/client.model";
+import Client, { IClient } from "../models/client.model";
 import Project from "../models/project.model";
+import { uploadFile } from "../utils/uploadImage";
+import mongoose from "mongoose";
 
 export const getClients = async (req: Request, res: Response) => {
   try {
@@ -19,12 +21,11 @@ export const getClient = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const client = await Client.findById(id).select(
-      "_id name email phone avatar projectsCounter"
+      "_id name email phone avatar projectsCounter avatar"
     );
     const projects = await Project.find({ client: id }).select(
       "_id name status description completedTasksCounter tasksCounter"
     );
-    console.log(projects);
     if (!client) {
       res.status(404).json({ message: "Client not found" });
       return;
@@ -42,7 +43,23 @@ export const getClient = async (req: Request, res: Response) => {
 export const createClient = async (req: Request, res: Response) => {
   try {
     const { name, email, phone, userId } = req.body;
-    const client = new Client({ name, email, phone, userId });
+    const files = req.files as
+      | { [fieldname: string]: Express.Multer.File[] }
+      | undefined;
+    const images = files?.["image"] as Express.Multer.File[] | undefined;
+    let client: IClient;
+    if (images && images.length > 0) {
+      const { ref, downloadUrl } = await uploadFile(images[0], name, "client");
+      client = new Client({
+        name,
+        email,
+        phone,
+        userId,
+        avatar: downloadUrl,
+      });
+    } else {
+      client = new Client({ name, email, phone, userId });
+    }
     await client.save();
     res.status(201).json({ message: "Client created", data: client });
   } catch (error) {
@@ -53,8 +70,6 @@ export const createClient = async (req: Request, res: Response) => {
 export const updateClient = async (req: Request, res: Response) => {
   try {
     const id = req.body._id;
-    console.log(id);
-    console.log(req.body);
     const { name, email, phone } = req.body;
     const client = await Client.findByIdAndUpdate(id, {
       name,

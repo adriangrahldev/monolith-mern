@@ -34,23 +34,33 @@ const DefaultCard = ({
             {subtitle && <h3 className={`text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>{subtitle}</h3>}
           </div>
 
-        {
-          link && (
-          <Link href={link} className="self-start">
-            <ChevronRightIcon className="w-6 h-6" />
-          </Link>
-          )
-        }
+          {
+            link && (
+              <Link href={link} className="self-start">
+                <ChevronRightIcon className="w-6 h-6" />
+              </Link>
+            )
+          }
 
         </div>
       </CardHeader>
       <CardContent>
         <div className="flex gap-2 justify-between">
-          {avatar && <Image src={avatar} alt="avatar" width={44} height={44} className="rounded-full h-fit" />}
+          {avatar && (
+            <div className="relative w-11 h-11 rounded-full overflow-hidden">
+              <Image
+                src={avatar}
+                alt="avatar"
+                fill
+                sizes="(max-width: 768px) 200px, 200px"
+                className="rounded-full object-cover"
+              />
+            </div>
+          )}
           <p className="text-sm">{description}</p>
           <span className="self-end flex flex-col -space-y-1 justify-center">
             <span className="text-4xl font-bold text-end">{counter}</span>
-            <span className="text-sm ">{counterText}</span>
+            <span className="text-sm">{counterText}</span>
           </span>
         </div>
       </CardContent>
