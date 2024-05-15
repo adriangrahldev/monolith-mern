@@ -29,7 +29,7 @@ const ProjectTaskTable = ({tasks, statusFilter, handleTaskUpdate}:{
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead className="w-[35%] font-bold">Description</TableHead>
+                    <TableHead className="w-[35%] font-bold">Title</TableHead>
                     <TableHead className="w-[20%] font-bold">Start Date</TableHead>
                     <TableHead className="w-[20%] font-bold">End Date</TableHead>
                     <TableHead className="w-[15%] font-bold">Status</TableHead>
@@ -40,7 +40,7 @@ const ProjectTaskTable = ({tasks, statusFilter, handleTaskUpdate}:{
                 {tasks.map((task: Task, index:number) => (
                     statusFilter === "all" || task.status === statusFilter ? (
                         <TableRow key={task._id} className={` hover:shadow-xl hover:bg-slate-200 cursor-pointer ${index % 2 === 0 ? 'bg-slate-100' : ''}`}>
-                            <TableCell>{task.description}</TableCell>
+                            <TableCell>{task.title}</TableCell>
                             <TableCell>
                                 {
                                     task.startDate ? moment(task.startDate).format("MMM DD, YYYY") : "No Start Date"
