@@ -4,11 +4,14 @@ import moment from "moment";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "../ui/button";
 
-const ProjectTaskTable = ({tasks, statusFilter, handleTaskUpdate}:{
+const ProjectTaskTable = ({tasks, statusFilter, handleTaskUpdate, handleEditTask, handleDeleteTask}:{
     tasks: Task[],
     statusFilter: string,
-    handleTaskUpdate: CallableFunction
+    handleTaskUpdate: CallableFunction,
+    handleEditTask: CallableFunction,
+    handleDeleteTask: CallableFunction
 }) => {
 
 
@@ -65,8 +68,12 @@ const ProjectTaskTable = ({tasks, statusFilter, handleTaskUpdate}:{
                             </TableCell>
                             <TableCell>
                                 <div className="flex gap-2 justify-center">
-                                    <FontAwesomeIcon icon={faEdit} />
-                                    <FontAwesomeIcon icon={faTrashAlt} />
+                                    <Button size={'icon'} className="w-8 h-8" onClick={() => {handleEditTask(task)}}>
+                                        <FontAwesomeIcon icon={faEdit} />
+                                    </Button>
+                                    <Button size={'icon'} variant={'destructive'} className="w-8 h-8" onClick={() => {handleDeleteTask(task)}}>
+                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                    </Button>
                                 </div>
                             </TableCell>
                         </TableRow>
