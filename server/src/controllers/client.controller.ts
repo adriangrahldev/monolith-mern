@@ -69,13 +69,34 @@ export const createClient = async (req: Request, res: Response) => {
 
 export const updateClient = async (req: Request, res: Response) => {
   try {
-    const id = req.body._id;
+    const id = req.params.id;
     const { name, email, phone } = req.body;
-    const client = await Client.findByIdAndUpdate(id, {
-      name,
-      email,
-      phone,
-    });
+    const files = req.files as
+      | { [fieldname: string]: Express.Multer.File[] }
+      | undefined;
+    const images = files?.["image"] as Express.Multer.File[] | undefined;
+    let client;
+    if (images && images.length > 0) {
+      const { ref, downloadUrl } = await uploadFile(images[0], name, "client");
+      client = await Client.findByIdAndUpdate(id, {
+        name,
+        email,
+        phone,
+        avatar: downloadUrl,
+      });
+      if (!client) {
+        res.status(404).json({ message: "Client not found" });
+        return;
+      }
+      res.json({ message: "Client updated", data: client });
+      return;
+    } else {
+      const client = await Client.findByIdAndUpdate(id, {
+        name,
+        email,
+        phone,
+      });
+    }
     if (!client) {
       res.status(404).json({ message: "Client not found" });
       return;

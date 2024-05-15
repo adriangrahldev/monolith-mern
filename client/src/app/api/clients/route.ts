@@ -108,7 +108,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await req.json();
+  const body = await req.formData();
   const clientId = extractClientId(req.url);
   if (!clientId) {
     return NextResponse.json(
@@ -122,9 +122,8 @@ export async function PUT(req: NextRequest) {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: body,
     });
     return await handleApiResponse(response);
   } catch (error) {

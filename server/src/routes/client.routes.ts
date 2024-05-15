@@ -20,7 +20,12 @@ router.post(
   createClient
 );
 router.get("/:id", jwtCheck, getClient);
-router.put("/:id", jwtCheck, updateClient);
+router.put(
+  "/:id",
+  jwtCheck,
+  upload.fields([{ name: "image", maxCount: 1 }]),
+  updateClient
+);
 router.delete("/:id", jwtCheck, deleteClient);
 
 export default router;
