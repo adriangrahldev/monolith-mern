@@ -17,7 +17,7 @@ export interface ITask extends Document {
 export const taskSchema = new Schema<ITask>(
   {
     title: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String, required: false },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: false },
     status: { type: String, required: true },
