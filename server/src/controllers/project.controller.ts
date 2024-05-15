@@ -27,7 +27,7 @@ export const getProject = async (req: Request, res: Response) => {
       return;
     }
     const comments = await Comment.find({ projectId: id });
-    const projectObject = { ...project, comments };
+    const projectObject = { ...project.toObject(), comments};
     res.json(projectObject);
   } catch (error) {
     errorHandling(error, res);
