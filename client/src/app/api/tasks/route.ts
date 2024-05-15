@@ -3,6 +3,24 @@ import { NextRequest, NextResponse } from "next/server";
 import { log } from "util";
 const apiURL = process.env.API_SERVER_URL;
 
+
+const handleApiResponse = async (response: Response) => {
+  const contentType = response.headers.get("content-type");
+  if (!contentType || !contentType.includes("application/json")) {
+    console.error("Expected JSON response but received:", contentType);
+    throw new TypeError("Expected JSON response");
+  }
+  const responseData = await response.json();
+  if (response.ok) {
+    return NextResponse.json(responseData);
+  }
+  return NextResponse.json(
+    { message: responseData.message || "Request failed" },
+    { status: response.status }
+  );
+};
+
+
 export async function GET(req: NextRequest) {
   const session = await getSession();
   const user = session?.user;
@@ -78,17 +96,44 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const { accessToken } = await getAccessToken();
+  const session = await getSession();
+  const accessToken = session?.accessToken;
+  if (!accessToken) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
-  const response = await fetch(`${apiURL}/api/tasks/${req}`, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-  return NextResponse.json(await response.json());
+  const taskId = extractTaskId(req.url);
+  if (!taskId) {
+    return NextResponse.json(
+      { message: "Task ID is missing" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const response = await fetch(`${apiURL}/api/tasks/${taskId}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await response.json();
+    console.log(data);
+    
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Failed to update task:", error);
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
+  }
 }
+
+const extractTaskId = (url: string) => {
+  const match = url.match(/taskId=([^&]+)/);
+  return match ? match[1] : null;
+};
+
 
 export const runtime = "edge";
