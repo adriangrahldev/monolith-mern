@@ -5,13 +5,17 @@ import {useRouter} from "next/navigation";
 import DefaultCard from "@/components/admin/DefaultCard";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import TaskTable from "@/components/tasks/TaskTable";
+import TableSkeleton from '../../../components/skeletons/TableSkeleton';
 
 const AdminHomePage = () => {
   const router = useRouter();
 
   const { clearItems } = useBreadcrumb();
+  const [pendingTasks, setPendingTasks] = useState<any>([])
+  const [fetchingTasks, setFetchingTasks] = useState<boolean>(false)
 
   const fetchPendingTasks = useCallback(async () => {
+    setFetchingTasks(true);
       try {
         const res = await fetch(`/api/tasks?status=in-backlog`, {
           method: "GET",
@@ -26,8 +30,11 @@ const AdminHomePage = () => {
 
         const data = await res.json();
         setPendingTasks(data);
+        setFetchingTasks(false);
       } catch (error) {
+        setFetchingTasks(false);
         throw error;
+
       }
   }, [router]);
 
@@ -38,8 +45,7 @@ const AdminHomePage = () => {
   }, [clearItems])
 
 
-  const [pendingTasks, setPendingTasks] = useState<any>([])
-
+  
   useEffect(() => {
     fetchPendingTasks();
   }, [fetchPendingTasks]);
@@ -57,7 +63,15 @@ const AdminHomePage = () => {
           <h1 className="text-2xl font-bold">Upcoming tasks</h1>
         </CardHeader>
         <CardContent>
-          <TaskTable tasks={pendingTasks} ></TaskTable>
+          {
+            fetchingTasks && <TableSkeleton />
+          }
+          {
+            !fetchingTasks && pendingTasks.length === 0 && <p>No pending tasks</p>
+          }
+          {
+            !fetchingTasks && pendingTasks.length > 0 && <TaskTable tasks={pendingTasks} ></TaskTable>
+          }
         </CardContent>
       </Card>
     </div>
