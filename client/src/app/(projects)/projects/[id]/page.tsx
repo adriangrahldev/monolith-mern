@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter, useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import { toast } from "sonner";
 
 // Importaciones de componentes y contextos propios
 import { Button } from "@/components/ui/button";
@@ -114,6 +115,29 @@ const ProjectPage = () => {
     }
   };
 
+  const handleTaskUpdate = async (task: Task, status: string) => {
+    const data = {
+      ...task,
+      status: status,
+    };
+
+    try {
+      const res = await fetch(`/api/tasks?taskId=${task._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (res.status === 401) {
+        router.push("/api/auth/login");
+      }
+      fetchTasks();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const fetchTasks = useCallback(async () => {
     try {
       const res = await fetch(`/api/tasks?projectId=${id}`);
@@ -139,7 +163,6 @@ const ProjectPage = () => {
       if (res.status === 200) {
         setProject(data);
       }
-      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -229,6 +252,7 @@ const ProjectPage = () => {
                     <ProjectTaskTable
                       tasks={tasks}
                       statusFilter={statusFilter}
+                      handleTaskUpdate={handleTaskUpdate}
                     />
                   </div>
                 </div>
