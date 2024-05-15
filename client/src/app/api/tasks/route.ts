@@ -104,6 +104,7 @@ export async function PUT(req: NextRequest) {
 
   const body = await req.json();
   const taskId = extractTaskId(req.url);
+  console.log("Task ID:", taskId);
   if (!taskId) {
     return NextResponse.json(
       { message: "Task ID is missing" },
@@ -121,7 +122,6 @@ export async function PUT(req: NextRequest) {
       body: JSON.stringify(body),
     });
     const data = await response.json();
-    console.log(data);
     
     return NextResponse.json(data);
   } catch (error) {
