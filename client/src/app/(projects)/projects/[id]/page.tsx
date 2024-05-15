@@ -29,6 +29,7 @@ import { Client } from "@/interfaces/client";
 import ProjectTaskTable from "@/components/tasks/ProjectTaskTable";
 import CommentsPanel from "@/components/projects/comments/CommentsPanel";
 import { createTask } from '../../../../../../server/src/controllers/task.controller';
+import TableSkeleton from "@/components/skeletons/TableSkeleton";
 
 
 // Componente principal
@@ -40,6 +41,7 @@ const ProjectPage = () => {
   const [showCreateTaskModal, setShowCreateTaskModal] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [fetchingTasks, setFetchingTasks] = useState<boolean>(false);
 
   // Hooks de contexto
   const { setItems } = useBreadcrumb();
@@ -62,7 +64,7 @@ const ProjectPage = () => {
 
   const handleCreateTaskSubmit = async (formData: Task) => {
     const createTaskPromise = async () => {
-
+      setFetchingTasks(true);
       const data = {
         ...formData,
         projectId: id,
@@ -95,6 +97,7 @@ const ProjectPage = () => {
       loading: 'Registering task...',
       success: (data) => {
         fetchTasks();
+        setFetchingTasks(false);
         return `Task created successfully!`;
       },
       error: (err) => `Task creation has failed: ${err.message}`,
@@ -281,11 +284,23 @@ const ProjectPage = () => {
                     </Select>
                   </div>
                   <div className="">
-                    <ProjectTaskTable
-                      tasks={tasks}
-                      statusFilter={statusFilter}
-                      handleTaskUpdate={handleTaskUpdate}
-                    />
+                    
+                    {
+                      fetchingTasks && <TableSkeleton />
+                    }
+                    {
+                      !fetchingTasks && tasks.length === 0 && <p>No tasks</p>
+                    }
+                    {
+                      !fetchingTasks && tasks.length > 0 && (
+                        <ProjectTaskTable
+                          tasks={tasks}
+                          statusFilter={statusFilter}
+                          handleTaskUpdate={handleTaskUpdate}
+                        />
+                      )
+                    }
+
                   </div>
                 </div>
               </CardContent>
@@ -304,7 +319,7 @@ const ProjectPage = () => {
           />
         )
       }
-
+  
       <CreateTaskModal
         show={showCreateTaskModal}
         toggle={toggleCreateTaskModal}
