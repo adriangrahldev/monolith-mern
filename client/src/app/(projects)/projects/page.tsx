@@ -11,6 +11,7 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from "next/navigation";
 import moment from "moment";
 import { Progress } from "@radix-ui/react-progress";
+import { SkeletonCard } from "@/components/skeletons/SkeletonCard";
 
 const ProjectsPage = () => {
   const router = useRouter();
@@ -18,8 +19,10 @@ const ProjectsPage = () => {
   const { setItems, clearItems } = useBreadcrumb();
   const [projects, setProjects] = useState<Project[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [fetchingProjects, setFetchingProjects] = useState<boolean>(false);
 
   const fetchProjects = useCallback(async () => {
+    setFetchingProjects(true);
     try {
       const res = await fetch(`/api/projects?userId=${user?.sub}`);
       const data = await res.json();
@@ -29,8 +32,11 @@ const ProjectsPage = () => {
       if (res.status === 200) {
         setProjects(data);
       }
+      
     } catch (error) {
       console.log(error);
+    } finally {
+      setFetchingProjects(false);
     }
   }, [user, router]);
 
@@ -93,23 +99,34 @@ const ProjectsPage = () => {
         id="projects-container"
         className="grid xl:grid-cols-4 grid-rows-3 gap-4 rounded-md lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 "
       >
-        {projects.map((project: Project, index) => (
-          <DefaultCard
-            key={index}
-            title={project.name}
-            subtitle={moment(project.createdAt).format("DD/MM/YYYY")}
-            description={project.description}
-            counter={project.tasksCounter || 0}
-            counterText={"Tasks"}
-            link={`/projects/${project._id}`}
-            footer={
-              <Progress
-                  value={(project.completedTasksCounter! / project.tasksCounter! * 100)||0}
-                  max={100}
-              > </Progress>
-            }
-          />
-        ))}
+        {
+          fetchingProjects && (
+            <><SkeletonCard /><SkeletonCard /><SkeletonCard /></>
+          )
+        }
+
+        {
+          !fetchingProjects && projects.length === 0 && <p>No projects</p>
+        }
+        {
+          !fetchingProjects && projects.length > 0 && projects.map((project: Project, index) => (
+            <DefaultCard
+              key={index}
+              title={project.name}
+              subtitle={moment(project.createdAt).format("DD/MM/YYYY")}
+              description={project.description}
+              counter={project.tasksCounter || 0}
+              counterText={"Tasks"}
+              link={`/projects/${project._id}`}
+              footer={
+                <Progress
+                    value={(project.completedTasksCounter! / project.tasksCounter! * 100)||0}
+                    max={100}
+                > </Progress>
+              }
+            />
+          ))
+        }
       </div>
       <CreateProjectModal
         show={showCreateModal}
