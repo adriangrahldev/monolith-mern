@@ -6,6 +6,7 @@ export interface Task {
     startDate: string;
     endDate: string;
     projectId: string;
+    projectName?: string;
     createdAt?: string;
     updatedAt?: string;
 }
