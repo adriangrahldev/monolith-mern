@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { Task } from "@/interfaces/task";
+import moment from "moment";
 
 const CreateTaskModal = ({
   show,
@@ -17,7 +18,7 @@ const CreateTaskModal = ({
     _id: "",
     title: "",
     description: "",
-    startDate: "",
+    startDate: moment().format("YYYY-MM-DD"),
     endDate: "",
     status: "in-backlog",
     projectId: "",
@@ -52,7 +53,7 @@ const CreateTaskModal = ({
           <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
             <div className="flex flex-col">
               <label className="text-gray-400 text-sm font-semibold mb-1">
-                Title
+                Title *
               </label>
               <input
                 type="text"
@@ -81,7 +82,7 @@ const CreateTaskModal = ({
             <div className="grid grid-cols-2 gap-2">
               <div className="flex flex-col">
                 <label className="text-gray-400 text-sm font-semibold mb-1">
-                  Start Date
+                  Start Date *
                 </label>
                 <input
                   type="date"
@@ -93,7 +94,7 @@ const CreateTaskModal = ({
               </div>
               <div className="flex flex-col">
                 <label className="text-gray-400 text-sm font-semibold mb-1">
-                  End Date
+                  End Date (optional)
                 </label>
                 <input
                   type="date"
@@ -107,7 +108,7 @@ const CreateTaskModal = ({
 
             <div className="flex flex-col">
               <label className="text-gray-400 text-sm font-semibold mb-1">
-                Status
+                Status *
               </label>
               <select
                 name="status"
