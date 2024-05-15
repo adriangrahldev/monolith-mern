@@ -29,7 +29,7 @@ import { Client } from "@/interfaces/client";
 import ProjectTaskTable from "@/components/tasks/ProjectTaskTable";
 import CommentsPanel from "@/components/projects/comments/CommentsPanel";
 import TableSkeleton from "@/components/skeletons/TableSkeleton";
-
+import EditTaskModal from "@/components/modals/EditTaskModal";
 
 // Componente principal
 const ProjectPage = () => {
@@ -41,6 +41,8 @@ const ProjectPage = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [fetchingTasks, setFetchingTasks] = useState<boolean>(false);
+  const [selectedTask, setSelectedTask] = useState<Task | undefined>();
+  const [showEditTaskModal, setShowEditTaskModal] = useState(false);
 
   // Hooks de contexto
   const { setItems } = useBreadcrumb();
@@ -59,7 +61,79 @@ const ProjectPage = () => {
 
   const toggleCommentsPanel = () => {
     setShowCommentsPanel(!showCommentsPanel);
-  }
+  };
+
+  const toggleEditTaskModal = () => {
+    setShowEditTaskModal(!showEditTaskModal);
+  };
+
+  const handleEditTaskSubmit = async (formData: Task) => {
+    const updateTaskPromise = async () => {
+      setFetchingTasks(true);
+      const data = {
+        ...formData,
+        projectId: id,
+        userId: user?.sub as string,
+      };
+
+      try {
+        const res = await fetch(`/api/tasks?taskId=${formData._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        if (res.status === 401) {
+          router.push("/api/auth/login");
+        }
+        fetchTasks();
+        toggleEditTaskModal();
+        fetchProject();
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    };
+
+    toast.promise(updateTaskPromise(), {
+      loading: "Updating task...",
+      success: (data) => {
+        fetchTasks();
+        setFetchingTasks(false);
+        return `Task updated successfully!`;
+      },
+      error: (err) => `Task update has failed: ${err.message}`,
+    });
+  };
+
+  const handleDeleteTask = async (task: Task) => {
+    const deleteTaskPromise = async () => {
+      setFetchingTasks(true);
+      try {
+        const res = await fetch(`/api/tasks?taskId=${task._id}`, {
+          method: "DELETE",
+        });
+        if (res.status === 401) {
+          router.push("/api/auth/login");
+        }
+        fetchTasks();
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    };
+
+    toast.promise(deleteTaskPromise(), {
+      loading: "Deleting task...",
+      success: (data) => {
+        fetchTasks();
+        setFetchingTasks(false);
+        return `Task deleted successfully!`;
+      },
+      error: (err) => `Task deletion has failed: ${err.message}`,
+    });
+  };
 
   const handleCreateTaskSubmit = async (formData: Task) => {
     const createTaskPromise = async () => {
@@ -69,7 +143,7 @@ const ProjectPage = () => {
         projectId: id,
         userId: user?.sub as string,
       };
-        
+
       try {
         const res = await fetch(`/api/tasks`, {
           method: "POST",
@@ -88,21 +162,18 @@ const ProjectPage = () => {
         console.log(error);
         throw error;
       }
-  };
+    };
 
-  toast.promise(
-    createTaskPromise(),
-    {
-      loading: 'Registering task...',
+    toast.promise(createTaskPromise(), {
+      loading: "Registering task...",
       success: (data) => {
         fetchTasks();
         setFetchingTasks(false);
         return `Task created successfully!`;
       },
       error: (err) => `Task creation has failed: ${err.message}`,
-    }
-  );
-  }
+    });
+  };
 
   const handleStatusFilterChange = (value: string) => {
     setStatusFilter(value);
@@ -137,7 +208,6 @@ const ProjectPage = () => {
 
   const handleTaskUpdate = async (task: Task, status: string) => {
     const updateTaskPromise = async () => {
-
       const data = {
         ...task,
         status: status,
@@ -159,18 +229,15 @@ const ProjectPage = () => {
       }
     };
 
-    toast.promise(
-      updateTaskPromise(),
-      {
-        loading: 'Updating task...',
-        success: (data) => {
-          fetchTasks();
-          return `Task updated successfully!`;
-        },
-        error: (err) => `Update failed: ${err.message}`,
-      }
-    );
-  }
+    toast.promise(updateTaskPromise(), {
+      loading: "Updating task...",
+      success: (data) => {
+        fetchTasks();
+        return `Task updated successfully!`;
+      },
+      error: (err) => `Update failed: ${err.message}`,
+    });
+  };
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -277,29 +344,26 @@ const ProjectPage = () => {
                       <SelectContent>
                         <SelectItem value="all">All</SelectItem>
                         <SelectItem value="in-backlog">Backlog</SelectItem>
-                        <SelectItem value="in-progress">In Progres</SelectItem>
-                        <SelectItem value="complete">Complete</SelectItem>
+                        <SelectItem value="in-progress">In Progress</SelectItem>
+                        <SelectItem value="completed">Completed</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="">
-                    
-                    {
-                      fetchingTasks && <TableSkeleton />
-                    }
-                    {
-                      !fetchingTasks && tasks.length === 0 && <p>No tasks</p>
-                    }
-                    {
-                      !fetchingTasks && tasks.length > 0 && (
-                        <ProjectTaskTable
-                          tasks={tasks}
-                          statusFilter={statusFilter}
-                          handleTaskUpdate={handleTaskUpdate}
-                        />
-                      )
-                    }
-
+                    {fetchingTasks && <TableSkeleton />}
+                    {!fetchingTasks && tasks.length === 0 && <p>No tasks</p>}
+                    {!fetchingTasks && tasks.length > 0 && (
+                      <ProjectTaskTable
+                        tasks={tasks}
+                        statusFilter={statusFilter}
+                        handleTaskUpdate={handleTaskUpdate}
+                        handleEditTask={(task: Task) => {
+                          setSelectedTask(task);
+                          toggleEditTaskModal();
+                        }}
+                        handleDeleteTask={handleDeleteTask}
+                      />
+                    )}
                   </div>
                 </div>
               </CardContent>
@@ -308,22 +372,29 @@ const ProjectPage = () => {
         </div>
       </div>
 
-      {
-        showCommentsPanel && (
-          <CommentsPanel
-            comments={project?.comments}
-            user={user}
-            onSubmit={handleCommentSubmit}
-            toggleCommentsPanel={toggleCommentsPanel}
-          />
-        )
-      }
-  
+      {showCommentsPanel && (
+        <CommentsPanel
+          comments={project?.comments}
+          user={user}
+          onSubmit={handleCommentSubmit}
+          toggleCommentsPanel={toggleCommentsPanel}
+        />
+      )}
+
       <CreateTaskModal
         show={showCreateTaskModal}
         toggle={toggleCreateTaskModal}
         onSubmit={handleCreateTaskSubmit}
       />
+
+      {selectedTask && (
+        <EditTaskModal
+          show={showEditTaskModal}
+          toggle={toggleEditTaskModal}
+          task={selectedTask}
+          onSubmit={handleEditTaskSubmit}
+        />
+      )}
     </>
   );
 };
