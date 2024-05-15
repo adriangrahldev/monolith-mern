@@ -86,7 +86,15 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const { accessToken } = await getAccessToken();
-  const response = await fetch(`${apiURL}/api/tasks/${req}`, {
+  const taskId = extractTaskId(req.url);
+  if (!taskId) {
+    return NextResponse.json(
+      { message: "Task ID is missing" },
+      { status: 400 }
+    );
+  }
+
+  const response = await fetch(`${apiURL}/api/tasks/${taskId}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${accessToken}`,
