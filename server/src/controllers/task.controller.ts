@@ -1,14 +1,40 @@
 import { Request, Response } from "express";
 import Task from "../models/task.model";
+import Project from "../models/project.model";
 
 
 // Function to get all tasks from the database
 export const getTasks = async (req: Request, res: Response) => {
   try {
     const projectId = req.query.projectId;
+    const status = req.query.status;
+    if (status && !projectId) {
+      const tasks = await Task.find({ status });
 
-    const tasks = await Task.find({ projectId });
-    res.json(tasks);
+      const tasksWithProjectName = await Promise.all(tasks.map(async (task) => {
+        const project = await Project.findById(task.projectId);
+        return {
+          ...task.toObject(),
+          projectName: project ? project.name : null
+        };
+      }));
+
+      res.json(tasksWithProjectName);
+      return;
+    } else if (projectId) {
+      const tasks = await Task.find({ projectId });
+      const tasksWithProjectName = await Promise.all(tasks.map(async (task) => {
+        const project = await Project.findById(task.projectId);
+        return {
+          ...task.toObject(),
+          projectName: project ? project.name : null
+        };
+      }));
+      res.json(tasksWithProjectName);
+      return;
+    } else {
+      return res.status(400).json({ message: "Missing projectId or status" });
+    }
   } catch (error) {
     errorHandling(error, res);
   }
@@ -67,7 +93,7 @@ export const updateTask = async (req: Request, res: Response) => {
       status
     } = req.body;
     const task = await Task.findOne({ _id: id });
-
+    
 
     if (!task) {
       res.status(404).json({ message: "Task not found" });
@@ -80,10 +106,10 @@ export const updateTask = async (req: Request, res: Response) => {
     task.endDate = endDate;
     task.status = status;
     await task.save();
-
+    
     res.status(200).json(task);
   } catch (error) {
-
+    
     errorHandling(error, res);
   }
 };
