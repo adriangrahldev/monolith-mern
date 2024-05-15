@@ -2,7 +2,7 @@ export interface Task {
     _id?: string;
     title: string;
     description?: string;
-    status: "in-progress" | "complete" | "in-backlog";
+    status: "in-progress" | "completed" | "in-backlog";
     startDate: string;
     endDate: string;
     projectId: string;
