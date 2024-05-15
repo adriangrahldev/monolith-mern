@@ -114,10 +114,7 @@ const ClientPage = () => {
             try {
                 const res = await fetch(`/api/clients?clientId=${id}`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData),
+                    body: formData,
                 });
                 const data = await res.json();
                 if (res.status === 200) {
