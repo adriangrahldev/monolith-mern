@@ -2,7 +2,6 @@ import { getAccessToken, getSession } from "@auth0/nextjs-auth0/edge";
 import { NextRequest, NextResponse } from "next/server";
 const apiURL = process.env.API_SERVER_URL;
 
-
 const handleApiResponse = async (response: Response) => {
   const contentType = response.headers.get("content-type");
   if (!contentType || !contentType.includes("application/json")) {
@@ -19,7 +18,6 @@ const handleApiResponse = async (response: Response) => {
   );
 };
 
-
 export async function GET(req: NextRequest) {
   const session = await getSession();
   const user = session?.user;
@@ -28,7 +26,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
   if (req.url.includes("taskId")) {
-
     const taskId = req.url.split("=")[1];
     try {
       const response = await fetch(`${apiURL}/api/tasks/${taskId}`, {
@@ -49,11 +46,13 @@ export async function GET(req: NextRequest) {
   } else {
     try {
       if (!req.url.includes("status")) {
-
         const projectId = req.url.split("projectId=")[1];
-        const response = await fetch(`${apiURL}/api/tasks?userId=${user.sub}&projectId=${projectId}`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        const response = await fetch(
+          `${apiURL}/api/tasks?userId=${user.sub}&projectId=${projectId}`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
 
         if (!response.ok) {
           return NextResponse.json(
@@ -65,9 +64,12 @@ export async function GET(req: NextRequest) {
         return NextResponse.json(await response.json());
       } else {
         const status = req.url.split("status=")[1];
-        const response = await fetch(`${apiURL}/api/tasks?userId=${user.sub}&status=${status}`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
+        const response = await fetch(
+          `${apiURL}/api/tasks?userId=${user.sub}&status=${status}`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
 
         if (!response.ok) {
           return NextResponse.json(
@@ -123,7 +125,6 @@ export async function PUT(req: NextRequest) {
   if (!accessToken) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
-
   const body = await req.json();
   const taskId = extractTaskId(req.url);
   if (!taskId) {
@@ -143,7 +144,6 @@ export async function PUT(req: NextRequest) {
       body: JSON.stringify(body),
     });
     const data = await response.json();
-
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json({ message: "Server error" }, { status: 500 });
@@ -154,6 +154,5 @@ const extractTaskId = (url: string) => {
   const match = url.match(/taskId=([^&]+)/);
   return match ? match[1] : null;
 };
-
 
 export const runtime = "edge";
