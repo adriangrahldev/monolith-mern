@@ -5,9 +5,7 @@ import Comment from "../models/comment.model";
 export const getProjects = async (req: Request, res: Response) => {
   try {
     const projectId = req.query.projectId;
-    const projects = await Project.find({ projectId }).select(
-      "_id name description image startDate endDate status tasksCounter"
-    );
+    const projects = await Project.find({ projectId });
     res.json(projects);
   } catch (error) {
     errorHandling(error, res);
