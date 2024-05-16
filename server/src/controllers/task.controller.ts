@@ -92,24 +92,22 @@ export const updateTask = async (req: Request, res: Response) => {
       endDate,
       status
     } = req.body;
-    const task = await Task.findOne({ _id: id });
     
+    const task = await Task.findByIdAndUpdate(id, {
+      title,
+      description,
+      startDate,
+      endDate,
+      status
+    }, { new: true });
 
     if (!task) {
       res.status(404).json({ message: "Task not found" });
       return;
     }
-    // Find One And Update no funciona, por eso se hace de esta manera por ahora
-    task.title = title;
-    task.description = description;
-    task.startDate = startDate;
-    task.endDate = endDate;
-    task.status = status;
-    await task.save();
     
     res.status(200).json(task);
   } catch (error) {
-    
     errorHandling(error, res);
   }
 };
@@ -118,13 +116,11 @@ export const updateTask = async (req: Request, res: Response) => {
 export const deleteTask = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const task = await Task.findOne({_id: id});
+    const task = await Task.findOneAndUpdate({ _id: id }, { isDeleted: true });
     if (!task) {
       res.status(404).json({ message: "Task not found" });
       return;
     }
-    task.isDeleted = true;
-    await task.save();
     res.json({ message: "Task deleted" });
   } catch (error) {
     errorHandling(error, res);
