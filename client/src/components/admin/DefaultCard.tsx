@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { ChevronRightIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
+import { ReactNode } from 'react';
 
 const DefaultCard = ({
   title,
@@ -15,7 +16,7 @@ const DefaultCard = ({
   avatar
 }: {
   title: string;
-  subtitle?: string;
+  subtitle?: ReactNode | string;
   description?: string;
   counter: number;
   counterText?: string;
@@ -31,7 +32,8 @@ const DefaultCard = ({
         <div className="flex justify-between items-center">
           <div>
             <h2 className="text-xl font-bold">{title}</h2>
-            {subtitle && <h3 className={`text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>{subtitle}</h3>}
+            {subtitle && (typeof subtitle === 'string') && <h3 className={`text-sm font-semibold ${theme === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>{subtitle}</h3>}
+            {subtitle && (typeof subtitle !== 'string') && subtitle}
           </div>
 
           {
@@ -64,7 +66,7 @@ const DefaultCard = ({
           </span>
         </div>
       </CardContent>
-      {footer && <CardFooter>{footer}</CardFooter>}
+      {footer && <CardFooter className="h-fit">{footer}</CardFooter>}
     </Card>
   );
 };
