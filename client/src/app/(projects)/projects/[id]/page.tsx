@@ -32,6 +32,7 @@ import TableSkeleton from "@/components/skeletons/TableSkeleton";
 import EditTaskModal from "@/components/modals/EditTaskModal";
 import Link from "next/link";
 import EditProjectModal from "@/components/modals/EditProjectModal";
+import { Badge } from "@/components/ui/badge";
 
 // Componente principal
 const ProjectPage = () => {
@@ -396,9 +397,9 @@ const ProjectPage = () => {
                   <div id="dates">
                     <h2 className="text-md font-semibold text-gray-500">Date</h2>
                     <div className="font-bold flex gap-2 items-center">
-                      <span>{project.startDate.split('T')[0]}</span>
+                      <Badge variant={'outline'}>{project.startDate.split('T')[0]}</Badge>
                       <FontAwesomeIcon icon={faArrowsLeftRight} />
-                      <span>{project.endDate.split('T')[0]}</span>
+                      <Badge variant={'outline'}>{project.endDate.split('T')[0]}</Badge>
                     </div>
                   </div>
                   <div id="description">
