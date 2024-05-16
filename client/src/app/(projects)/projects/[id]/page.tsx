@@ -1,6 +1,6 @@
 "use client";
 // Importaciones de librerías y componentes externos
-import { faChevronCircleRight, faCommentDots, faEdit, faEye, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import { faArrowsLeftRight, faChevronCircleRight, faCommentDots, faEdit, faEye, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter, useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -391,6 +391,14 @@ const ProjectPage = () => {
                           </div>
                         )
                       }
+                    </div>
+                  </div>
+                  <div id="dates">
+                    <h2 className="text-md font-semibold text-gray-500">Date</h2>
+                    <div className="font-bold flex gap-2 items-center">
+                      <span>{project.startDate.split('T')[0]}</span>
+                      <FontAwesomeIcon icon={faArrowsLeftRight} />
+                      <span>{project.endDate.split('T')[0]}</span>
                     </div>
                   </div>
                   <div id="description">
