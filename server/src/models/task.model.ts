@@ -1,4 +1,4 @@
-import { Document, Schema, model } from "mongoose";
+import mongoose, { Document, Schema, model } from "mongoose";
 import Project from "./project.model";
 
 // Define the task schema
@@ -48,7 +48,7 @@ taskSchema.post("save", function (doc: ITask, next) {
 });
 
 // Middleware para decrementar el contador de tareas cuando se elimina una tarea y si esta completada decrementar el contador de tareas completadas
-taskSchema.post("findOneAndUpdate", function (doc: ITask, next) {
+taskSchema.post("updateOne", function (doc: ITask, next) {
   if (doc.isDeleted && doc.status === "completed") {
     Project.findByIdAndUpdate(doc.projectId, {
       $inc: { tasksCounter: -1, completedTasksCounter: -1 },
@@ -68,16 +68,61 @@ taskSchema.post("findOneAndUpdate", function (doc: ITask, next) {
   }
 });
 
-//middleware para aumentar el contador de tareas completadas
 taskSchema.post("findOneAndUpdate", function (doc: ITask, next) {
-  if (doc.status === "completed") {
+  if (!doc) {
+    return next(new Error("No document found"));
+  }
+  if (doc.isDeleted && doc.status === "completed") {
     Project.findByIdAndUpdate(doc.projectId, {
-      $inc: { completedTasksCounter: 1 },
+      $inc: { tasksCounter: -1, completedTasksCounter: -1 },
     })
       .exec()
       .then(() => next())
       .catch((err) => next(err));
+  } else if (doc.isDeleted) {
+    Project.findByIdAndUpdate(doc.projectId, {
+      $inc: { tasksCounter: -1 },
+    })
+      .exec()
+      .then(() => next())
+      .catch((err) => next(err));
+  } else {
+    next();
   }
+});
+
+let originalStatus: string;
+
+// Middleware para manejar cambios en el estado de la tarea
+taskSchema.pre("findOneAndUpdate", async function (next) {
+  const taskId = this.getQuery()._id;
+  const task = await await mongoose.models.Task.findById(taskId);
+  if (task) {
+    originalStatus = task.status;
+  }
+  next();
+});
+
+taskSchema.post("findOneAndUpdate", async function (doc: ITask, next) {
+  if (!doc) {
+    return next(new Error("No document found"));
+  }
+
+  // Si la tarea cambió de "completed" a otro estado
+  if (originalStatus === "completed" && doc.status !== "completed") {
+    await Project.findByIdAndUpdate(doc.projectId, {
+      $inc: { completedTasksCounter: -1 },
+    }).exec();
+  }
+
+  // Si la tarea cambió de otro estado a "completed"
+  if (originalStatus !== "completed" && doc.status === "completed") {
+    await Project.findByIdAndUpdate(doc.projectId, {
+      $inc: { completedTasksCounter: 1 },
+    }).exec();
+  }
+
+  next();
 });
 
 //middleware para solo traer las tareas no eliminadas
