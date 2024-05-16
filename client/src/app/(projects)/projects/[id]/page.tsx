@@ -1,6 +1,6 @@
 "use client";
 // Importaciones de librerías y componentes externos
-import { faCommentDots, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import { faChevronCircleRight, faCommentDots, faEdit, faEye, faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter, useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -30,6 +30,8 @@ import ProjectTaskTable from "@/components/tasks/ProjectTaskTable";
 import CommentsPanel from "@/components/projects/comments/CommentsPanel";
 import TableSkeleton from "@/components/skeletons/TableSkeleton";
 import EditTaskModal from "@/components/modals/EditTaskModal";
+import Link from "next/link";
+import EditProjectModal from "@/components/modals/EditProjectModal";
 
 // Componente principal
 const ProjectPage = () => {
@@ -43,6 +45,7 @@ const ProjectPage = () => {
   const [fetchingTasks, setFetchingTasks] = useState<boolean>(false);
   const [selectedTask, setSelectedTask] = useState<Task | undefined>();
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
+  const [showEditProjectModal, setShowEditProjectModal] = useState(false);
 
   // Hooks de contexto
   const { setItems } = useBreadcrumb();
@@ -65,6 +68,9 @@ const ProjectPage = () => {
   const toggleEditTaskModal = () => {
     setShowEditTaskModal(!showEditTaskModal);
   };
+  const toggleEditProjectModal = () => {
+    setShowEditProjectModal(!showEditProjectModal);
+  }
 
   // Funcion para manejar la actualización de una tarea
   const handleEditTaskSubmit = async (formData: Task) => {
@@ -244,6 +250,43 @@ const ProjectPage = () => {
     });
   };
 
+
+  // Funcion para manejar la actualización de un proyecto
+  const handleEditProjectSubmit = async (formData: Project) => {
+    const updateProjectPromise = async () => {
+      const data = {
+        ...formData,
+      };
+
+      try {
+        const res = await fetch(`/api/projects?projectId=${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        if (res.status === 401) {
+          router.push("/api/auth/login");
+        }
+        fetchProject();
+        toggleEditProjectModal();
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    };
+
+    toast.promise(updateProjectPromise(), {
+      loading: "Updating project...",
+      success: (data) => {
+        fetchProject();
+        return `Project updated successfully!`;
+      },
+      error: (err) => `Update failed: ${err.message}`,
+    });
+  };
+
   // Funciones de efecto para obtener los datos del proyecto y las tareas
   const fetchTasks = useCallback(async () => {
     try {
@@ -311,6 +354,10 @@ const ProjectPage = () => {
           className="w-full flex gap-2 items-center bg-gray-200 rounded-md px-2 h-12"
         >
           <div className="flex-1 flex justify-start">
+            <Button variant={"ghost"} onClick={toggleEditProjectModal}>
+              <FontAwesomeIcon icon={faEdit} className="mr-2" />
+              Edit Project
+            </Button>
             <Button variant={"ghost"} onClick={toggleCreateTaskModal}>
               <FontAwesomeIcon icon={faPlusSquare} className="mr-2" />
               Add Task
@@ -318,8 +365,8 @@ const ProjectPage = () => {
           </div>
           <div className="flex-1 flex justify-end">
             <Button variant={"ghost"} onClick={toggleCommentsPanel}>
-              <FontAwesomeIcon icon={faCommentDots} className="mr-2" />
-              Comments
+              <FontAwesomeIcon icon={faCommentDots} className="mr-2 max-lg:mr-0" />
+              <span className="max-lg:hidden">Comments</span>
             </Button>
           </div>
         </div>
@@ -329,18 +376,26 @@ const ProjectPage = () => {
           {project && (
             <Card>
               <CardContent className="p-4 grid grid-cols-1 sm:grid-cols-1 md:flex md:flex-row gap-4">
-                <div className="w-[35%] space-y-2">
+                <div className="w-[35%] max-lg:w-full space-y-2">
                   <h2 className="text-2xl font-bold">{project.name}</h2>
                   <div id="client">
-                    <h2 className="text-lg font-bold">Client</h2>
-                    <p className="pl-2">
-                      {(project.client && (project.client as Client).name) ||
-                        "Sin Cliente"}
-                    </p>
+                    <h2 className="text-md font-semibold text-gray-500">Client</h2>
+                    <div className="font-bold">
+                      {project.client && 
+                        (
+                          <div className="flex gap-2">
+                          {(project.client as Client).name}
+                          <Link href={'/clients/'+(project.client as Client)._id} className="w-6 h-6 " >
+                            <FontAwesomeIcon icon={faChevronCircleRight} />
+                          </Link>
+                          </div>
+                        )
+                      }
+                    </div>
                   </div>
                   <div id="description">
-                    <h2 className="text-lg font-bold">Description</h2>
-                    <p className="pl-2">{project.description}</p>
+                    <h2 className="text-md font-semibold text-gray-500">Description</h2>
+                    <p className="font-bold">{project.description}</p>
                   </div>
                 </div>
                 <div id="tasks" className="flex-1">
@@ -407,6 +462,14 @@ const ProjectPage = () => {
           onSubmit={handleEditTaskSubmit}
         />
       )}
+      
+      <EditProjectModal 
+      project={project!}
+      show={showEditProjectModal}
+      toggle={toggleEditProjectModal}
+      onSubmit={(formData)=>{handleEditProjectSubmit(formData!)}}
+      />
+      
     </>
   );
 };
