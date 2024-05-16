@@ -55,18 +55,18 @@ const ProjectPage = () => {
   // Hook de autenticación
   const { user } = useUser();
 
+  // Funciones de manejo de estado
   const toggleCreateTaskModal = () => {
     setShowCreateTaskModal(!showCreateTaskModal);
   };
-
   const toggleCommentsPanel = () => {
     setShowCommentsPanel(!showCommentsPanel);
   };
-
   const toggleEditTaskModal = () => {
     setShowEditTaskModal(!showEditTaskModal);
   };
 
+  // Funcion para manejar la actualización de una tarea
   const handleEditTaskSubmit = async (formData: Task) => {
     const updateTaskPromise = async () => {
       setFetchingTasks(true);
@@ -107,6 +107,7 @@ const ProjectPage = () => {
     });
   };
 
+  // Funcion para manejar la eliminación de una tarea
   const handleDeleteTask = async (task: Task) => {
     const deleteTaskPromise = async () => {
       setFetchingTasks(true);
@@ -135,6 +136,7 @@ const ProjectPage = () => {
     });
   };
 
+  // Funcion para manejar la creación de una tarea
   const handleCreateTaskSubmit = async (formData: Task) => {
     const createTaskPromise = async () => {
       setFetchingTasks(true);
@@ -175,10 +177,12 @@ const ProjectPage = () => {
     });
   };
 
+  // Funcion para manejar el cambio de filtro de estado
   const handleStatusFilterChange = (value: string) => {
     setStatusFilter(value);
   };
 
+  // Funcion para manejar el envio de un comentario
   const handleCommentSubmit = async (content: string) => {
     const data = {
       content: content,
@@ -206,6 +210,7 @@ const ProjectPage = () => {
     }
   };
 
+  // Funcion para manejar la actualización de una tarea
   const handleTaskUpdate = async (task: Task, status: string) => {
     const updateTaskPromise = async () => {
       const data = {
@@ -239,6 +244,7 @@ const ProjectPage = () => {
     });
   };
 
+  // Funciones de efecto para obtener los datos del proyecto y las tareas
   const fetchTasks = useCallback(async () => {
     try {
       const res = await fetch(`/api/tasks?projectId=${id}`);
@@ -254,6 +260,7 @@ const ProjectPage = () => {
     }
   }, [id, router]);
 
+  // Funciones de efecto para obtener los datos del proyecto
   const fetchProject = useCallback(async () => {
     try {
       const res = await fetch(`/api/projects?projectId=${id}`);
@@ -269,6 +276,8 @@ const ProjectPage = () => {
     }
   }, [id, router]);
 
+
+  // Efectos para actualizar el breadcrumb y obtener los datos del proyecto y las tareas
   useEffect(() => {
     setItems([
       {
@@ -283,10 +292,13 @@ const ProjectPage = () => {
     ]);
   }, [id, project?.name, setItems]);
 
+
+  // Efectos para obtener los datos del proyecto y las tareas
   useEffect(() => {
     fetchProject();
   }, [fetchProject]);
 
+  // Efectos para obtener los datos de las tareas
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
