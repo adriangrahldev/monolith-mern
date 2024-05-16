@@ -63,7 +63,6 @@ export async function DELETE(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const { accessToken } = await getAccessToken();
   const body = await req.json();
-  console.log(body);
   const response = await fetch(`${apiURL}/api/projects`, {
     method: "POST",
     headers: {
@@ -78,7 +77,9 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   const { accessToken } = await getAccessToken();
   const body = await req.json();
-  const response = await fetch(`${apiURL}/api/projects/${req}`, {
+  const projectId = req.url.split('projectId=')[1];
+  console.log(projectId);
+  const response = await fetch(`${apiURL}/api/projects/${projectId}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -88,5 +89,6 @@ export async function PUT(req: NextRequest) {
   });
   return NextResponse.json(await response.json());
 }
+
 
 export const runtime = "edge";
