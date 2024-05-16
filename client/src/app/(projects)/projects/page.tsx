@@ -10,7 +10,7 @@ import { Project } from "@/interfaces/project";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { useRouter } from "next/navigation";
 import moment from "moment";
-import { Progress } from "@radix-ui/react-progress";
+import { Progress } from "@/components/ui/progress";
 import { SkeletonCard } from "@/components/skeletons/SkeletonCard";
 
 const ProjectsPage = () => {
