@@ -17,9 +17,6 @@ export const getProject = async (req: Request, res: Response) => {
     const id = req.params.id;
     const project = await Project.findOne({ _id: id })
       .populate("client")
-      .select(
-        "_id userId client name description image startDate endDate status"
-      );
     if (!project) {
       res.status(404).json({ message: "Project not found" });
       return;
@@ -43,6 +40,7 @@ export const createProject = async (req: Request, res: Response) => {
       startDate,
       endDate,
       status,
+      isOnline,
     } = req.body;
 
     const project = new Project({
@@ -54,6 +52,7 @@ export const createProject = async (req: Request, res: Response) => {
       startDate,
       endDate,
       status,
+      isOnline,
     });
 
     await project.save();
@@ -76,6 +75,7 @@ export const updateProject = async (req: Request, res: Response) => {
       startDate,
       endDate,
       status,
+      isOnline,
     } = req.body;
 
     const project = await Project.findByIdAndUpdate(id, {
@@ -87,6 +87,7 @@ export const updateProject = async (req: Request, res: Response) => {
       startDate,
       endDate,
       status,
+      isOnline,
     });
 
     if (!project) {
