@@ -64,7 +64,7 @@ const ViewProject = () => {
             console.error(error);
             reject(error);
         } finally {
-            setAuthor("");
+            setAuthor(client?.name || "");
             setContent("");
         }
     });
@@ -94,6 +94,7 @@ const ViewProject = () => {
       setProject(data);
       setClient(data.client as Client);
       setComments(data.comments as Comment[]);
+      setAuthor(data.client?.name || "");
       fetchTasks();
     } catch (error) {
       console.error(error);
@@ -104,17 +105,25 @@ const ViewProject = () => {
     fetchProject();
   }, [fetchProject]);
 
-  if (project === undefined) return <p>Loading...</p>;
+  if (project === undefined) return (
+    <div className="flex justify-center items-center w-screen h-screen">
+            <Image className="animate-bounce" src="/isologo1.svg" alt="Monolith Logo" width={200} height={200} priority={true} />
+
+        </div>
+  );
   return (
-    <main className="w-screen">
+    <main className="overflow-hidden">
       <header className="bg-slate-100">
         <div id="headerInfo">
           <div
             id="projectInfo"
-            className="p-6 w-full grid grid-cols-12 items-center"
+            className="p-6 max-lg:p-2 w-full grid grid-cols-12 items-center"
           >
-            <div className="col-span-11">
-              <h1 className="text-6xl font-semibold">{project.name}</h1>
+            <div id="appLogo" className="hidden max-lg:flex col-span-12 ">
+              <Image src="/isologo1.svg" alt="Logo" width={48} height={48} />
+            </div>
+            <div className="col-span-11 max-lg:col-span-12">
+              <h1 className="text-6xl max-lg:text-3xl font-semibold">{project.name}</h1>
               <div className="flex items-center">
                 <Badge variant={"default"}>
                   {moment(project.startDate).format("DD/MM/YYYY")}
@@ -128,14 +137,14 @@ const ViewProject = () => {
                 {project.description}
               </p>
             </div>
-            <div id="appLogo">
+            <div id="appLogo" className="max-lg:hidden">
               <Image src="/isologo1.svg" alt="Logo" width={96} height={96} />
             </div>
           </div>
-          <div className="grid grid-cols-3 bg-black p-4 w-full">
+          <div className="grid grid-cols-3 max-lg:grid-cols-1 bg-black p-4 w-full">
             <div
               id="clientInfo"
-              className="flex items-center gap-2 justify-center"
+              className="flex items-center gap-2 justify-center max-lg:justify-start max-lg:border-b-2 border-gray-500 pb-3"
             >
               <Avatar>
                 <AvatarImage src={client?.avatar} />
@@ -150,16 +159,16 @@ const ViewProject = () => {
             </div>
             <div
               id="taskCounter"
-              className="flex gap-4 items-center justify-center"
-            >
+
+              className="flex items-center gap-2 justify-center max-lg:justify-start max-lg:border-b-2 border-gray-500 py-3"            >
               <span className="text-white font-semibold text-lg">
                 {project.tasksCounter} Total tasks
               </span>
             </div>
             <div
               id="completedTask"
-              className="flex items-center justify-center"
-            >
+
+              className="flex items-center gap-2 justify-center max-lg:justify-start max-lg:border-b-2 border-gray-500 py-3"            >
               <span className="text-white font-semibold text-lg">
                 {project.completedTasksCounter} Completed tasks
               </span>
@@ -167,7 +176,7 @@ const ViewProject = () => {
           </div>
         </div>
       </header>
-      <Card id="taskView" className="p-4 border-none shadow-none">
+      <Card id="taskView" className="p-4 max-lg:p-0 border-none shadow-none w-full">
         <CardHeader>
           <h1 className="text-2xl font-bold">Tasks</h1>
         </CardHeader>
@@ -177,9 +186,9 @@ const ViewProject = () => {
                 <p>No tasks found</p>
             )
           }
-          <div id="taskList" className="grid grid-cols-3 gap-4">
+          <div id="taskList" className="grid grid-cols-3 max-lg:grid-cols-1 gap-4">
             {tasks.map((task) => (
-              <div key={task._id} className="bg-slate-100 p-4">
+              <div key={task._id} className="bg-slate-100 p-4 max-lg:p-1.5">
                     {/* Show task status (in-progess, in-backlog and completed) */}
                     {
                         task.status === "completed" ? (
@@ -217,7 +226,7 @@ const ViewProject = () => {
           </div>
         </CardContent>
       </Card>
-      <Card id="commentView" className="p-4 border-none shadow-none">
+      <Card id="commentView" className="p-4 max-lg:p-0 border-none shadow-none">
         <CardHeader>
           <h1 className="text-2xl font-bold">Comments</h1>
         </CardHeader>
@@ -227,7 +236,7 @@ const ViewProject = () => {
                 <p>No comments found</p>
             )
           }
-          <div id="commentList" className="grid grid-cols-3 gap-4">
+          <div id="commentList" className="grid grid-cols-3 max-lg:grid-cols-1 gap-4">
             {comments.map((comment) => (
               <div key={comment._id} className="bg-slate-100 p-4">
                 <h2 className="text-2xl font-semibold">{comment.author}</h2>
@@ -242,7 +251,7 @@ const ViewProject = () => {
           </div>
         </CardContent>
       </Card>
-      <Card id="commentForm" className="p-4 border-none shadow-none">
+      <Card id="commentForm" className="border-none shadow-none">
         <CardHeader>
           <h1 className="text-2xl font-bold">Add Comment</h1>
         </CardHeader>
