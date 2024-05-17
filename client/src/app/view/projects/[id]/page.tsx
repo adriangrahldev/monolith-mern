@@ -172,6 +172,11 @@ const ViewProject = () => {
           <h1 className="text-2xl font-bold">Tasks</h1>
         </CardHeader>
         <CardContent>
+          {
+            tasks.length === 0 && (
+                <p>No tasks found</p>
+            )
+          }
           <div id="taskList" className="grid grid-cols-3 gap-4">
             {tasks.map((task) => (
               <div key={task._id} className="bg-slate-100 p-4">
@@ -217,6 +222,11 @@ const ViewProject = () => {
           <h1 className="text-2xl font-bold">Comments</h1>
         </CardHeader>
         <CardContent>
+          {
+            comments.length === 0 && (
+                <p>No comments found</p>
+            )
+          }
           <div id="commentList" className="grid grid-cols-3 gap-4">
             {comments.map((comment) => (
               <div key={comment._id} className="bg-slate-100 p-4">
