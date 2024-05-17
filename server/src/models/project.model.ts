@@ -15,6 +15,7 @@ export interface IProject extends Document {
   completedTasksCounter: number;
   createdAt: Date;
   updatedAt: Date;
+  isOnline: boolean;
 }
 
 export const projectSchema = new Schema<IProject>(
@@ -30,6 +31,7 @@ export const projectSchema = new Schema<IProject>(
     completedTasksCounter: { type: Number, default: 0 },
     isDeleted: { type: Boolean, default: false },
     status: { type: String, required: true },
+    isOnline: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
