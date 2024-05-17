@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import moment from "moment";
 import { Progress } from "@/components/ui/progress";
 import { SkeletonCard } from "@/components/skeletons/SkeletonCard";
+import { toast } from "sonner";
 
 const ProjectsPage = () => {
   const router = useRouter();
@@ -44,28 +45,39 @@ const ProjectsPage = () => {
     setShowCreateModal(!showCreateModal);
   };
 
-  const handleRegisterSubmit = async  (formData: Project) => {
-    console.log(formData);
-    console.log(user);
+  const handleRegisterSubmit = (formData: Project) => {
+    const registerPromise = async () => {
+      try {
+        formData.userId = user?.sub as string;
+        const res = await fetch('/api/projects', {
+          method: 'POST',
+          body: JSON.stringify(formData),
+        });
+        const data = await res.json();
+        if (res.status === 200 || res.status === 201) {
+          return data;
+        } else {
+          throw new Error('Failed to register');
+        }
+      } catch (error) {
+        throw error;
+      }
+    };
 
-    formData.userId = user?.sub as string;
-
-    try {
-      const res = await fetch('/api/projects', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
+    toast.promise(
+      registerPromise(),
+      {
+        loading: 'Registering project...',
+        success: (data) => {
+          fetchProjects();
+          toggleCreateModal();
+          return `Project registered successfully!`;
         },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-    fetchProjects();
-    toggleCreateModal();
-  };
+        error: (err) => `Registration failed: ${err.message}`,
+      }
+    );
+  }
+
 
   useEffect(() => {
     clearItems();
@@ -106,7 +118,9 @@ const ProjectsPage = () => {
         }
 
         {
-          !fetchingProjects && projects.length === 0 && <p>No projects</p>
+          !fetchingProjects && projects.length === 0 && <p className="font-semibold text-xl text-center col-span-3">
+            When you create a project, it will appear here
+          </p>
         }
         {
           !fetchingProjects && projects.length > 0 && projects.map((project: Project, index) => (
