@@ -83,7 +83,32 @@
       transform: scale(1);
     }
   }
+   /* zoom and 3d effects */
+  @keyframes zoomInRepeat {
+    from {
+      transform: scale(0.7);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes rotate {
+    from {
+      transform: rotateY(0deg);
+    }
+    to {
+      transform: rotateY(360deg);
+    }
+  }
   
   .animate-zoom{
       animation: zoomIn 0.2s;
+  }
+
+  .animate-zoom-repeat{
+      animation: zoomInRepeat 1s infinite alternate;
+  }
+  .animate-rotate-repeat{
+      animation: rotate 1s infinite linear;
   }
