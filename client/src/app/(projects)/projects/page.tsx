@@ -118,7 +118,7 @@ const ProjectsPage = () => {
         }
 
         {
-          !fetchingProjects && projects.length === 0 && <p className="font-semibold text-xl text-center col-span-3">
+          !fetchingProjects && projects.length === 0 && <p className="font-semibold text-xl text-center col-span-full">
             When you create a project, it will appear here
           </p>
         }
