@@ -45,7 +45,7 @@ const CreateTaskModal = ({
   return show ? (
     <div className="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-10">
       <div className="fixed w-screen h-screen bg-black opacity-50"></div>
-      <Card className="z-50 w-2/6 shadow-xl animate-zoom">
+      <Card className="z-50 w-2/6 max-lg:w-screen shadow-xl animate-zoom">
         <CardHeader>
           <h1 className="font-bold text-xl">Create New Task</h1>
         </CardHeader>
