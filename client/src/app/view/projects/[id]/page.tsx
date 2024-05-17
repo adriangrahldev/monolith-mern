@@ -105,10 +105,10 @@ const ViewProject = () => {
     fetchProject();
   }, [fetchProject]);
 
-  if (project === undefined) return (
-    <div className="flex justify-center items-center w-screen h-screen">
-            <Image className="animate-bounce" src="/isologo1.svg" alt="Monolith Logo" width={200} height={200} priority={true} />
-
+  if (1 === 1) return (
+    <div className="flex animate-zoom-repeat justify-center flex-col items-center w-screen h-screen">
+            <Image src="/isologo1.svg" alt="Monolith Logo" width={200} height={200} priority={true} />
+            Loading...
         </div>
   );
   return (
