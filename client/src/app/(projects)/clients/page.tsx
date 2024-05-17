@@ -107,6 +107,13 @@ const ClientsPage = () => {
           clients.map((client, index) => (
             <DefaultCard key={index} title={client.name} counter={client.projectsCounter} counterText={'Projects'} avatar={client.avatar} link={`/clients/${client._id}`} />
           ))}
+
+          {
+            clients.length === 0 && !loading && <p className="font-semibold text-xl text-center col-span-full">
+            When you create a client, it will appear here
+          </p>
+          
+          }
       </div>
       <CreateClientModal show={showCreateModal} toggle={toggleCreateModal} onSubmit={handleRegisterSubmit} />
 
