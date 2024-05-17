@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import ErrorScreen from "@/components/ui/ErrorScreen";
 import { Input } from "@/components/ui/input";
 import { Client } from "@/interfaces/client";
 import { Comment } from "@/interfaces/comment";
@@ -90,8 +91,10 @@ const ViewProject = () => {
     try {
       const response = await fetch(`/api/projects?projectId=${id}`);
       const data = await response.json();
-      console.log(data);
       setProject(data);
+      if(!data.isOnline){
+        toast.error("This project is offline, please contact your administrator");
+      }
       setClient(data.client as Client);
       setComments(data.comments as Comment[]);
       setAuthor(data.client?.name || "");
@@ -111,6 +114,7 @@ const ViewProject = () => {
             Loading...
         </div>
   );
+  if(!project.isOnline) return <ErrorScreen message="This project is offline, please contact the administrator" />;
   return (
     <main className="overflow-hidden">
       <header className="bg-slate-100">
