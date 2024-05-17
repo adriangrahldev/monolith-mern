@@ -50,6 +50,17 @@ const CreateProjectModal = ({
     e.preventDefault();
     if (onSubmit) {
       onSubmit(formData);
+      toggle();
+      setFormData({
+        userId: "",
+        client: initialClient?._id || "",
+        name: "",
+        description: "",
+        startDate: moment().format("YYYY-MM-DD"),
+        endDate: moment().format("YYYY-MM-DD"),
+        status: "pending",
+      
+      })
     }
   };
   const onChange = (

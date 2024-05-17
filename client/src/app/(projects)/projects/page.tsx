@@ -70,7 +70,6 @@ const ProjectsPage = () => {
         loading: 'Registering project...',
         success: (data) => {
           fetchProjects();
-          toggleCreateModal();
           return `Project registered successfully!`;
         },
         error: (err) => `Registration failed: ${err.message}`,

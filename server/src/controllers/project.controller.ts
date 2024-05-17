@@ -104,7 +104,7 @@ export const updateProject = async (req: Request, res: Response) => {
 export const deleteProject = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const project = await Project.findById(id);
+    const project = await Project.findByIdAndUpdate(id, {isDeleted: true});
     if (!project) {
       res.status(404).json({ message: "Project not found" });
       return;
@@ -114,8 +114,6 @@ export const deleteProject = async (req: Request, res: Response) => {
       task.isDeleted = true;
       await task.save();
     }
-    project.isDeleted = true;
-    await project.save();
     res.json({ message: "Project deleted" });
   } catch (error) {
     errorHandling(error, res);
