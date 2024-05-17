@@ -26,9 +26,18 @@ const CreateTaskModal = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
     if (onSubmit) {
       onSubmit(formData);
+      setFormData({
+        _id: "",
+        title: "",
+        description: "",
+        startDate: moment().format("YYYY-MM-DD"),
+        endDate: "",
+        status: "in-backlog",
+        projectId: "",
+      });
+      toggle();
     }
   };
 
