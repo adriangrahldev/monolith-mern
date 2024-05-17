@@ -5,15 +5,20 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import { Client } from "@/interfaces/client";
 import { Project } from "@/interfaces/project";
+import { toast } from "sonner";
+import { ValidImagesTypes } from "@/interfaces/ValidImagesTypes";
+import Image from "next/image";
 
 const CreateProjectModal = ({
   show,
   toggle,
-  onSubmit
+  onSubmit,
+  initialData
 }: {
   show: boolean;
   toggle: () => void;
   onSubmit?: (formData: Project) => void;
+  initialData?: Project;
 }) => {
   const [formData, setFormData] = useState<Project>({
     userId: "",
@@ -27,6 +32,8 @@ const CreateProjectModal = ({
 
   const [clients, setClients] = useState<Client[]>([]);
 
+  
+  
   const fetchClients = async () => {
     try {
       const res = await fetch("/api/clients");
@@ -41,11 +48,14 @@ const CreateProjectModal = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (onSubmit) onSubmit(formData);
+    if (onSubmit) {
+      onSubmit(formData);
+    }
   };
-
   const onChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     const formattedValue =
@@ -57,18 +67,26 @@ const CreateProjectModal = ({
       ...formData,
       [name]: formattedValue,
     });
-  };
 
+    
+  };
   useEffect(() => {
     fetchClients();
   }, []);
-
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
+  
   return show ? (
-    <div className="fixed w-screen h-screen top-0 left-0 flex items-center justify-center z-10">
+    <div className="fixed w-screen  h-screen top-0 left-0 flex items-center justify-center z-10">
       <div className="fixed w-screen h-screen bg-black opacity-50"></div>
-      <Card className="z-50 w-2/6 shadow-xl animate-zoom">
+      <Card className="z-50 shadow-xl animate-zoom max-lg:w-screen">
         <CardHeader>
-          <h1 className="font-bold text-xl">Create New Project</h1>
+          <h1 className="font-bold text-xl">
+            {initialData ? "Edit Project" : "Create New Project"}
+          </h1>
         </CardHeader>
         <CardContent>
           <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
@@ -76,7 +94,7 @@ const CreateProjectModal = ({
               className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
               required
               name="client"
-              value={(formData.client as string)}
+              value={formData.client as string}
               onChange={onChange}
             >
               <option value="" disabled>
@@ -106,6 +124,7 @@ const CreateProjectModal = ({
               required
             ></textarea>
 
+           
             <div className="flex gap-2">
               <div className="flex flex-col flex-1">
                 <label className="text-gray-400 text-sm font-semibold mb-1">
@@ -114,7 +133,7 @@ const CreateProjectModal = ({
                 <input
                   type="date"
                   name="startDate"
-                  value={formData.startDate}
+                  value={formData.startDate.split("T")![0]}
                   onChange={onChange}
                   className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
                   required
@@ -127,10 +146,9 @@ const CreateProjectModal = ({
                 <input
                   type="date"
                   name="endDate"
-                  value={formData.endDate}
+                  value={formData.endDate.split("T")![0]}
                   onChange={onChange}
                   className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
-                  required
                 />
               </div>
             </div>
@@ -148,7 +166,9 @@ const CreateProjectModal = ({
                 className=" bg-black text-white rounded-md p-2 px-4 focus:outline-none focus:ring-2 hover:scale-95"
               >
                 <FontAwesomeIcon icon={faSave} className="mr-2" />
-                Create Project
+                {
+                  initialData ? "Save Changes" : "Save Project"
+                }
               </button>
             </div>
           </form>
