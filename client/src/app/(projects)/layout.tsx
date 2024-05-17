@@ -14,10 +14,10 @@ import Image from "next/image";
 const AdminLayout = ({ children }: { children: ReactNode }) => {
     const { user, error, isLoading } = useUser();
     if (isLoading) return (
-        <div className="flex justify-center items-center w-screen h-screen">
-            <Image className="animate-spin" src="/isologo1.svg" alt="Monolith Logo" width={200} height={200} priority={true} />
-
-        </div>)
+        <div className="flex animate-zoom-repeat justify-center flex-col items-center w-screen h-screen">
+        <Image src="/isologo1.svg" alt="Monolith Logo" width={200} height={200} priority={true} />
+        Loading...
+    </div>)
     if (error) return <div>{error.message}</div>
     if (!user) redirect('/api/auth/login')
 
