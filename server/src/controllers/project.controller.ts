@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Project from "../models/project.model";
+import Task from "../models/task.model";
 import Comment from "../models/comment.model";
 
 export const getProjects = async (req: Request, res: Response) => {
@@ -103,11 +104,18 @@ export const updateProject = async (req: Request, res: Response) => {
 export const deleteProject = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const project = await Project.findByIdAndDelete(id);
+    const project = await Project.findById(id);
     if (!project) {
       res.status(404).json({ message: "Project not found" });
       return;
     }
+    const tasks = await Task.find({ projectId: id });
+    for (const task of tasks) {
+      task.isDeleted = true;
+      await task.save();
+    }
+    project.isDeleted = true;
+    await project.save();
     res.json({ message: "Project deleted" });
   } catch (error) {
     errorHandling(error, res);
