@@ -13,16 +13,18 @@ const CreateProjectModal = ({
   show,
   toggle,
   onSubmit,
-  initialData
+  initialData,
+  initialClient
 }: {
   show: boolean;
   toggle: () => void;
   onSubmit?: (formData: Project) => void;
   initialData?: Project;
+  initialClient?: Client;
 }) => {
   const [formData, setFormData] = useState<Project>({
     userId: "",
-    client: "",
+    client: initialClient?._id || "",
     name: "",
     description: "",
     startDate: moment().format("YYYY-MM-DD"),
@@ -96,6 +98,7 @@ const CreateProjectModal = ({
               name="client"
               value={formData.client as string}
               onChange={onChange}
+              disabled={initialClient ? true : false}
             >
               <option value="" disabled>
                 Select Client
