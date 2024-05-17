@@ -210,7 +210,6 @@ const ProjectPage = () => {
           router.push("/api/auth/login");
         }
         fetchTasks();
-        toggleCreateTaskModal();
         fetchProject();
       } catch (error) {
         console.log(error);
