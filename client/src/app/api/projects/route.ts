@@ -51,7 +51,8 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const { accessToken } = await getAccessToken();
-  const response = await fetch(`${apiURL}/api/projects/${req}`, {
+  const projectId = req.url.split('projectId=')[1];
+  const response = await fetch(`${apiURL}/api/projects/${projectId}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${accessToken}`,
