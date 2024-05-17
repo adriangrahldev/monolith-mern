@@ -18,4 +18,5 @@ export interface Project {
     comments?: Comment[];
     tasks?: Task[];
     completedTasksCounter?: number;
+    isOnline?: boolean;
 }
