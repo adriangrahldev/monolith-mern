@@ -5,9 +5,6 @@ import { faSave } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import { Client } from "@/interfaces/client";
 import { Project } from "@/interfaces/project";
-import { toast } from "sonner";
-import { ValidImagesTypes } from "@/interfaces/ValidImagesTypes";
-import Image from "next/image";
 
 const CreateProjectModal = ({
   show,
@@ -42,6 +39,7 @@ const CreateProjectModal = ({
       const data = await res.json();
       if (res.status === 200) {
         setClients(data);
+        console.log(data)
       }
     } catch (error) {
       console.log(error);
@@ -74,7 +72,8 @@ const CreateProjectModal = ({
   };
   useEffect(() => {
     fetchClients();
-  }, []);
+    console.log(formData)
+  }, [formData]);
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
@@ -101,7 +100,7 @@ const CreateProjectModal = ({
               disabled={initialClient ? true : false}
             >
               <option value="" disabled>
-                Select Client
+                Select Client 
               </option>
               {clients.map((client) => (
                 <option key={client._id} value={client._id}>

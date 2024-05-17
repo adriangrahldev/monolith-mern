@@ -3,10 +3,10 @@ import { getSession } from "@auth0/nextjs-auth0";
 import Image from "next/image";
 import Link from "next/link";
 
-export const Metadata = {
-  title: "Monolith",
-  description: "A project management tool for freelancers.",
-};
+// export const Metadata = {
+//   title: "Monolith",
+//   description: "A project management tool for freelancers.",
+// };
 
 export default async function Home() {
   const session = await getSession();

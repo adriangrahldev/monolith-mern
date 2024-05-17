@@ -105,7 +105,7 @@ const ViewProject = () => {
     fetchProject();
   }, [fetchProject]);
 
-  if (1 === 1) return (
+  if (!project || !client) return (
     <div className="flex animate-zoom-repeat justify-center flex-col items-center w-screen h-screen">
             <Image src="/isologo1.svg" alt="Monolith Logo" width={200} height={200} priority={true} />
             Loading...
@@ -123,18 +123,18 @@ const ViewProject = () => {
               <Image src="/isologo1.svg" alt="Logo" width={48} height={48} />
             </div>
             <div className="col-span-11 max-lg:col-span-12">
-              <h1 className="text-6xl max-lg:text-3xl font-semibold">{project.name}</h1>
+              <h1 className="text-6xl max-lg:text-3xl font-semibold">{project?.name}</h1>
               <div className="flex items-center">
                 <Badge variant={"default"}>
-                  {moment(project.startDate).format("DD/MM/YYYY")}
+                  {moment(project?.startDate).format("DD/MM/YYYY")}
                 </Badge>
                 <FontAwesomeIcon icon={faArrowsLeftRight} className="mx-2" />
                 <Badge variant={"default"}>
-                  {moment(project.endDate).format("DD/MM/YYYY")}
+                  {moment(project?.endDate).format("DD/MM/YYYY")}
                 </Badge>
               </div>
               <p className="mb-2 text-gray-500 font-semibold text-lg">
-                {project.description}
+                {project?.description}
               </p>
             </div>
             <div id="appLogo" className="max-lg:hidden">
@@ -162,7 +162,7 @@ const ViewProject = () => {
 
               className="flex items-center gap-2 justify-center max-lg:justify-start max-lg:border-b-2 border-gray-500 py-3"            >
               <span className="text-white font-semibold text-lg">
-                {project.tasksCounter} Total tasks
+                {project?.tasksCounter} Total tasks
               </span>
             </div>
             <div
@@ -170,7 +170,7 @@ const ViewProject = () => {
 
               className="flex items-center gap-2 justify-center max-lg:justify-start max-lg:border-b-2 border-gray-500 py-3"            >
               <span className="text-white font-semibold text-lg">
-                {project.completedTasksCounter} Completed tasks
+                {project?.completedTasksCounter} Completed tasks
               </span>
             </div>
           </div>
