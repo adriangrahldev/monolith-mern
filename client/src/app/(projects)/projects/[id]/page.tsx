@@ -9,6 +9,7 @@ import {
   faEdit,
   faEye,
   faPlusSquare,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter, useParams } from "next/navigation";
@@ -43,6 +44,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import CreateProjectModal from "@/components/modals/CreateProjectModal";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DeleteConfirmationModal } from "@/components/modals/DeleteConfirmationModal";
 
 // Componente principal
 const ProjectPage = () => {
@@ -57,6 +59,8 @@ const ProjectPage = () => {
   const [selectedTask, setSelectedTask] = useState<Task | undefined>();
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
   const [showEditProjectModal, setShowEditProjectModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const [isOnline, setIsOnline] = useState(false);
 
   // Hooks de contexto
@@ -83,7 +87,9 @@ const ProjectPage = () => {
   const toggleEditProjectModal = () => {
     setShowEditProjectModal(!showEditProjectModal);
   };
-
+  const toggleDeleteModal = () => {
+    setShowDeleteModal(!showDeleteModal);
+  };
   // Funcion para manejar la actualización de una tarea
   const handleEditTaskSubmit = async (formData: Task) => {
     const updateTaskPromise = async () => {
@@ -122,6 +128,34 @@ const ProjectPage = () => {
         return `Task updated successfully!`;
       },
       error: (err) => `Task update has failed: ${err.message}`,
+    });
+  };
+
+  // Funcion para manejar la eliminación de un proyecto
+  const handleDelete = async () => {
+    const deleteProjectPromise = async () => {
+      setFetchingTasks(true);
+      try {
+        const res = await fetch(`/api/projects?projectId=${id}`, {
+          method: "DELETE",
+        });
+        if (res.status === 401) {
+          router.push("/api/auth/login");
+        }
+        router.push("/projects");
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    };
+
+    toast.promise(deleteProjectPromise(), {
+      loading: "Deleting project...",
+      success: (data) => {
+        setFetchingTasks(false);
+        return `Project deleted successfully!`;
+      },
+      error: (err) => `Project deletion has failed: ${err.message}`,
     });
   };
 
@@ -419,6 +453,10 @@ const ProjectPage = () => {
               <FontAwesomeIcon icon={faEdit} className="mr-2" />
               Edit Project
             </Button>
+            <Button variant={"ghost"} onClick={toggleDeleteModal}>
+              <FontAwesomeIcon icon={faTrash} className="mr-2" />
+              Delete Project
+            </Button>
           </div>
           <div className="flex-1 flex justify-end">
             <Button variant={"ghost"} onClick={toggleCommentsPanel}>
@@ -576,6 +614,13 @@ const ProjectPage = () => {
         onSubmit={(formData: Project) => {
           handleEditProjectSubmit(formData!);
         }}
+      />
+      <DeleteConfirmationModal
+        show={showDeleteModal}
+        toggle={toggleDeleteModal}
+        onDelete={handleDelete}
+        name={project?.name || ""}
+        type="project"
       />
     </>
   );
