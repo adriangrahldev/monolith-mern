@@ -12,6 +12,7 @@ export interface ITask extends Document {
   isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
+  image?: string;
 }
 
 export const taskSchema = new Schema<ITask>(
@@ -23,6 +24,7 @@ export const taskSchema = new Schema<ITask>(
     status: { type: String, required: true },
     isDeleted: { type: Boolean, default: false },
     projectId: { type: String, required: true },
+    image: { type: String },
   },
   { timestamps: true }
 );
