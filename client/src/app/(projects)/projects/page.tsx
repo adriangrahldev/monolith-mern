@@ -33,7 +33,7 @@ const ProjectsPage = () => {
       if (res.status === 200) {
         setProjects(data);
       }
-      
+
     } catch (error) {
       console.log(error);
     } finally {
@@ -45,13 +45,15 @@ const ProjectsPage = () => {
     setShowCreateModal(!showCreateModal);
   };
 
-  const handleRegisterSubmit = (formData: Project) => {
+  const handleRegisterSubmit = (formData: FormData) => {
     const registerPromise = async () => {
       try {
-        formData.userId = user?.sub as string;
+        const userId = user?.sub as string;
+        formData.append("userId", userId);
+
         const res = await fetch('/api/projects', {
           method: 'POST',
-          body: JSON.stringify(formData),
+          body: formData,
         });
         const data = await res.json();
         if (res.status === 200 || res.status === 201) {
@@ -127,14 +129,15 @@ const ProjectsPage = () => {
               key={index}
               title={project.name}
               subtitle={moment(project.createdAt).format("DD/MM/YYYY")}
+              avatar={project.image ? project.image : ""}
               description={project.description}
               counter={project.tasksCounter || 0}
               counterText={"Tasks"}
               link={`/projects/${project._id}`}
               footer={
                 <Progress
-                    value={(project.completedTasksCounter! / project.tasksCounter! * 100)||0}
-                    max={100}
+                  value={(project.completedTasksCounter! / project.tasksCounter! * 100) || 0}
+                  max={100}
                 > </Progress>
               }
             />
