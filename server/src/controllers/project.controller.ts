@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import Project from "../models/project.model";
+import Project, { IProject } from "../models/project.model";
 import Task from "../models/task.model";
 import Comment from "../models/comment.model";
+import { uploadFile } from "../utils/uploadImage";
 
 export const getProjects = async (req: Request, res: Response) => {
   try {
@@ -16,14 +17,13 @@ export const getProjects = async (req: Request, res: Response) => {
 export const getProject = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const project = await Project.findOne({ _id: id })
-      .populate("client")
+    const project = await Project.findOne({ _id: id }).populate("client");
     if (!project) {
       res.status(404).json({ message: "Project not found" });
       return;
     }
     const comments = await Comment.find({ projectId: id });
-    const projectObject = { ...project.toObject(), comments};
+    const projectObject = { ...project.toObject(), comments };
     res.json(projectObject);
   } catch (error) {
     errorHandling(error, res);
@@ -43,18 +43,40 @@ export const createProject = async (req: Request, res: Response) => {
       status,
       isOnline,
     } = req.body;
-
-    const project = new Project({
-      userId,
-      client,
-      name,
-      description,
-      image,
-      startDate,
-      endDate,
-      status,
-      isOnline,
-    });
+    const files = req.files as
+      | { [fieldname: string]: Express.Multer.File[] }
+      | undefined;
+    const images = files?.["image"] as Express.Multer.File[] | undefined;
+    let project: IProject;
+    if (images && images.length > 0) {
+      const { ref, downloadUrl } = await uploadFile(
+        images[0],
+        name,
+        "projects"
+      );
+      project = new Project({
+        userId,
+        client,
+        name,
+        description,
+        image: downloadUrl,
+        startDate,
+        endDate,
+        status,
+        isOnline,
+      });
+    } else {
+      project = new Project({
+        userId,
+        client,
+        name,
+        description,
+        startDate,
+        endDate,
+        status,
+        isOnline,
+      });
+    }
 
     await project.save();
     res.status(201).json({ message: "Project created", data: project });
@@ -66,7 +88,6 @@ export const createProject = async (req: Request, res: Response) => {
 export const updateProject = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-
     const {
       userId,
       clientId,
@@ -78,18 +99,42 @@ export const updateProject = async (req: Request, res: Response) => {
       status,
       isOnline,
     } = req.body;
-
-    const project = await Project.findByIdAndUpdate(id, {
-      userId,
-      clientId,
-      name,
-      description,
-      image,
-      startDate,
-      endDate,
-      status,
-      isOnline,
-    });
+    const files = req.files as
+      | { [fieldname: string]: Express.Multer.File[] }
+      | undefined;
+    const images = files?.["image"] as Express.Multer.File[] | undefined;
+    let project;
+    if (images && images.length > 0) {
+      const { ref, downloadUrl } = await uploadFile(
+        images[0],
+        name,
+        "projects"
+      );
+      project = await Project.findByIdAndUpdate(id, {
+        name,
+        description,
+        image: downloadUrl,
+        startDate,
+        endDate,
+        status,
+        isOnline,
+      });
+      if (!project) {
+        res.status(404).json({ message: "Project not found" });
+        return;
+      }
+      res.json({ message: "Project updated", data: project });
+      return;
+    } else {
+      project = await Project.findByIdAndUpdate(id, {
+        name,
+        description,
+        startDate,
+        endDate,
+        status,
+        isOnline,
+      });
+    }
 
     if (!project) {
       res.status(404).json({ message: "Project not found" });
@@ -104,7 +149,7 @@ export const updateProject = async (req: Request, res: Response) => {
 export const deleteProject = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
-    const project = await Project.findByIdAndUpdate(id, {isDeleted: true});
+    const project = await Project.findByIdAndUpdate(id, { isDeleted: true });
     if (!project) {
       res.status(404).json({ message: "Project not found" });
       return;
