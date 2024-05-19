@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import Task from "../models/task.model";
+import Task, { ITask } from "../models/task.model";
 import Project from "../models/project.model";
+import { uploadFile } from "../utils/uploadImage";
 
 // Function to get all tasks from the database
 export const getTasks = async (req: Request, res: Response) => {
@@ -62,16 +63,36 @@ export const createTask = async (req: Request, res: Response) => {
   try {
     const { title, description, startDate, endDate, status, projectId } =
       req.body;
-
-    const task = new Task({
-      title,
-      description,
-      startDate,
-      endDate,
-      status,
-      projectId,
-    });
-
+    const files = req.files as
+      | { [fieldname: string]: Express.Multer.File[] }
+      | undefined;
+    const images = files?.["image"] as Express.Multer.File[] | undefined;
+    let task: ITask;
+    if (images && images.length > 0) {
+      const { ref, downloadUrl } = await uploadFile(
+        images[0],
+        req.body.title,
+        "tasks"
+      );
+      task = new Task({
+        title: title,
+        description: description,
+        startDate: startDate,
+        endDate: endDate,
+        status: status,
+        projectId: projectId,
+        image: downloadUrl,
+      });
+    } else {
+      task = new Task({
+        title: title,
+        description: description,
+        startDate: startDate,
+        endDate: endDate,
+        status: status,
+        projectId: projectId,
+      });
+    }
     await task.save();
     res.status(201).json(task);
   } catch (error) {
@@ -83,19 +104,34 @@ export const updateTask = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const { title, description, startDate, endDate, status } = req.body;
-
-    const task = await Task.findOneAndUpdate(
-      { _id: id },
-      {
+    const files = req.files as
+      | { [fieldname: string]: Express.Multer.File[] }
+      | undefined;
+    const images = files?.["image"] as Express.Multer.File[] | undefined;
+    let task;
+    if (images && images.length > 0) {
+      const { ref, downloadUrl } = await uploadFile(images[0], title, "tasks");
+      task = await Task.findByIdAndUpdate(id, {
         title,
         description,
         startDate,
         endDate,
         status,
-      },
-      { new: true }
-    );
-
+        image: downloadUrl,
+      });
+      if (!task) {
+        res.status(404).json({ message: "Task not found" });
+        return;
+      }
+    } else {
+      task = await Task.findByIdAndUpdate(id, {
+        title,
+        description,
+        startDate,
+        endDate,
+        status,
+      });
+    }
     if (!task) {
       res.status(404).json({ message: "Task not found" });
       return;
