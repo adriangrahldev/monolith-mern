@@ -107,14 +107,13 @@ export async function DELETE(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const { accessToken } = await getAccessToken();
-  const body = await req.json();
+  const formData = await req.formData();
   const response = await fetch(`${apiURL}/api/tasks`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
+    body: formData,
   });
   return NextResponse.json(await response.json());
 }
@@ -125,7 +124,7 @@ export async function PUT(req: NextRequest) {
   if (!accessToken) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
-  const body = await req.json();
+  const formData = await req.formData();
   const taskId = extractTaskId(req.url);
   if (!taskId) {
     return NextResponse.json(
@@ -139,9 +138,8 @@ export async function PUT(req: NextRequest) {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: formData,
     });
     const data = await response.json();
     return NextResponse.json(data);
