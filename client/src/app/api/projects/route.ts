@@ -30,9 +30,12 @@ export async function GET(req: NextRequest) {
     }
   } else {
     try {
-      const response = await fetch(`${apiURL}/api/projects?userId=${user.sub}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      const response = await fetch(
+        `${apiURL}/api/projects?userId=${user.sub}`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
 
       if (!response.ok) {
         return NextResponse.json(
@@ -51,7 +54,7 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const { accessToken } = await getAccessToken();
-  const projectId = req.url.split('projectId=')[1];
+  const projectId = req.url.split("projectId=")[1];
   const response = await fetch(`${apiURL}/api/projects/${projectId}`, {
     method: "DELETE",
     headers: {
@@ -60,36 +63,33 @@ export async function DELETE(req: NextRequest) {
   });
   return NextResponse.json(await response.json());
 }
-
 export async function POST(req: NextRequest) {
   const { accessToken } = await getAccessToken();
-  const body = await req.json();
+  const formData = await req.formData();
   const response = await fetch(`${apiURL}/api/projects`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
+    body: formData,
   });
   return NextResponse.json(await response.json());
 }
 
 export async function PUT(req: NextRequest) {
   const { accessToken } = await getAccessToken();
-  const body = await req.json();
-  const projectId = req.url.split('projectId=')[1];
-  console.log(projectId);
+  const formData = await req.formData();
+  console.log(formData);
+  const projectId = req.url.split("projectId=")[1];
   const response = await fetch(`${apiURL}/api/projects/${projectId}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
     },
-    body: JSON.stringify(body),
+    body: formData,
   });
+  console.log(response);
   return NextResponse.json(await response.json());
 }
-
 
 export const runtime = "edge";
