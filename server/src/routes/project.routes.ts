@@ -6,6 +6,7 @@ import {
   createProject,
   updateProject,
   deleteProject,
+  getProjectToView,
 } from "../controllers/project.controller";
 import { jwtCheck } from "../middleware/authMiddleware";
 import { upload } from "../config/multer";
@@ -28,5 +29,6 @@ router.put(
 );
 router.delete("/:id", jwtCheck, deleteProject);
 
+router.get("/view/:id", getProjectToView);
 
 export default router;
