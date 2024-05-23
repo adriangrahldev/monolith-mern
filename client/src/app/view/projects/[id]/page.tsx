@@ -77,36 +77,32 @@ const ViewProject = () => {
     });
   };
 
-  const fetchTasks = useCallback(async () => {
-    try {
-      const response = await fetch(`/api/tasks?projectId=${id}`);
-      const data = await response.json();
-      setTasks(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [id]);
 
-  const fetchProject = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const response = await fetch(`/api/projects?projectId=${id}`);
+      const response = await fetch(`/api/view?projectId=${id}`,{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const data = await response.json();
       setProject(data);
       if(!data.isOnline){
         toast.error("This project is offline, please contact your administrator");
       }
       setClient(data.client as Client);
+      setTasks(data.tasks as Task[]);
       setComments(data.comments as Comment[]);
       setAuthor(data.client?.name || "");
-      fetchTasks();
     } catch (error) {
       console.error(error);
     }
-  }, [id, fetchTasks]);
+  }, [id]);
 
   useEffect(() => {
-    fetchProject();
-  }, [fetchProject]);
+    fetchData();
+  }, [fetchData]);
 
   if (!project || !client) return (
     <div className="flex animate-zoom-repeat justify-center flex-col items-center w-screen h-screen">
