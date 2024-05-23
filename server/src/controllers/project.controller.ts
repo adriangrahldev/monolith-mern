@@ -30,6 +30,23 @@ export const getProject = async (req: Request, res: Response) => {
   }
 };
 
+export const getProjectToView = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    const project = await Project.findOne({ _id: id }).populate("client");
+    if (!project) {
+      res.status(404).json({ message: "Project not found" });
+      return;
+    }
+    const tasks = await Task.find({ projectId: id });
+    const comments = await Comment.find({ projectId: id });
+    const projectObject = { ...project.toObject(), comments, tasks };
+    res.json(projectObject);
+  } catch (error) {
+    errorHandling(error, res);
+  }
+};
+
 export const createProject = async (req: Request, res: Response) => {
   try {
     const {
