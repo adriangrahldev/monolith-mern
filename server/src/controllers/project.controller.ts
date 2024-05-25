@@ -59,6 +59,7 @@ export const createProject = async (req: Request, res: Response) => {
       endDate,
       status,
       isOnline,
+      demoUrl,
     } = req.body;
     const files = req.files as
       | { [fieldname: string]: Express.Multer.File[] }
@@ -81,6 +82,7 @@ export const createProject = async (req: Request, res: Response) => {
         endDate,
         status,
         isOnline,
+        demoUrl,
       });
     } else {
       project = new Project({
@@ -92,6 +94,7 @@ export const createProject = async (req: Request, res: Response) => {
         endDate,
         status,
         isOnline,
+        demoUrl,
       });
     }
 
@@ -115,7 +118,9 @@ export const updateProject = async (req: Request, res: Response) => {
       endDate,
       status,
       isOnline,
+      demoUrl,
     } = req.body;
+    console.log(demoUrl);
     const files = req.files as
       | { [fieldname: string]: Express.Multer.File[] }
       | undefined;
@@ -135,13 +140,8 @@ export const updateProject = async (req: Request, res: Response) => {
         endDate,
         status,
         isOnline,
+        demoUrl,
       });
-      if (!project) {
-        res.status(404).json({ message: "Project not found" });
-        return;
-      }
-      res.json({ message: "Project updated", data: project });
-      return;
     } else {
       project = await Project.findByIdAndUpdate(id, {
         name,
@@ -150,8 +150,11 @@ export const updateProject = async (req: Request, res: Response) => {
         endDate,
         status,
         isOnline,
+        demoUrl,
       });
     }
+
+    console.log(project);
 
     if (!project) {
       res.status(404).json({ message: "Project not found" });
