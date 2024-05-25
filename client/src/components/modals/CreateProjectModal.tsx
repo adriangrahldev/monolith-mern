@@ -30,6 +30,7 @@ const CreateProjectModal = ({
     startDate: moment().format("YYYY-MM-DD"),
     endDate: moment().format("YYYY-MM-DD"),
     status: "pending",
+    demoUrl: "",
   });
 
   const [clients, setClients] = useState<Client[]>([]);
@@ -71,12 +72,13 @@ const CreateProjectModal = ({
     e.preventDefault();
     if (onSubmit) {
       const formDataForm = new FormData();
-      formDataForm.append("client", formData.client as string); // Aseguramos que sea string
+      formDataForm.append("client", formData.client as string);
       formDataForm.append("name", formData.name);
       formDataForm.append("description", formData.description);
       formDataForm.append("startDate", formData.startDate);
       formDataForm.append("endDate", formData.endDate);
       formDataForm.append("status", formData.status);
+      formDataForm.append("demoUrl", formData.demoUrl || "");
       if (image) {
         formDataForm.append("image", image);
       }
@@ -90,6 +92,7 @@ const CreateProjectModal = ({
         startDate: moment().format("YYYY-MM-DD"),
         endDate: moment().format("YYYY-MM-DD"),
         status: "pending",
+        demoUrl: "", 
       });
       setImage(null);
       setPreview("");
@@ -169,7 +172,15 @@ const CreateProjectModal = ({
               onChange={onChange}
               required
             ></textarea>
-
+            <input
+              type="text"
+              placeholder="Demo URL"
+              className="border-2 border-gray-200 rounded-md p-2 focus:outline-none focus:border-black focus:ring-1 focus:ring-transparent"
+              name="demoUrl"
+              value={formData.demoUrl}
+              onChange={onChange}
+              required
+            />
             <div className="flex gap-2">
               <div className="flex flex-col flex-1">
                 <label className="text-gray-400 text-sm font-semibold mb-1">
