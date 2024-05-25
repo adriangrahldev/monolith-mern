@@ -127,7 +127,11 @@ const ViewProject = () => {
           <div className="flex-1 md:mr-8">
             <h2 className="text-4xl font-bold mb-4">{project?.name}</h2>
             <p className="text-gray-700 text-lg mb-6">{project?.description}</p>
-            <Button className="text-lg">View Demo</Button>
+            {project?.demoUrl && (
+              <Link href={project?.demoUrl}>
+                <Button className="text-lg">View Demo</Button>
+              </Link>
+            )}
           </div>
           <div className="flex-1">
             {project.image &&
