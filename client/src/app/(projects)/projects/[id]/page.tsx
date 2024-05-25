@@ -327,9 +327,6 @@ const ProjectPage = () => {
       try {
         const res = await fetch(`/api/projects?projectId=${id}`, {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
           body: formData,
         });
         if (res.status === 401) {
